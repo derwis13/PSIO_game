@@ -13,10 +13,12 @@ CONFIG(debug, debug|release){
 LIBS += -lOpenGL32 -lglu32
 
 SOURCES += \
+        Hero.cpp \
         create_world.cpp \
         main.cpp
 
 
 HEADERS += \
+    Hero.h \
     create_world.h
 

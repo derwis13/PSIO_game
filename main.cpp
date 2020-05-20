@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "create_world.h"
+#include "Hero.h"
 
 void move_camera(const sf::Clock &clk);
 void set_viewport(const int &width, const int &height);
@@ -30,6 +31,7 @@ int main() {
 
     Load_Texture("wall.png",Texturs,Texturs.size());
     Load_Texture("grass.png",Texturs,Texturs.size());
+    Load_Texture("my_head1.jpg",Texturs,Texturs.size());
 
     glClearColor(0, 0, 0, 1);
 
@@ -57,11 +59,12 @@ int main() {
     glEnable(GL_NORMALIZE) ;
     bool running = true;
 
+    create_world *world;
+    Hero *hero;
+
     sf::Clock clock;
     set_viewport(window.getSize().x, window.getSize().y);
     while (running) {
-
-
         sf::Event event;
         window.setFramerateLimit(60);
         while (window.pollEvent(event)) {
@@ -100,7 +103,7 @@ int main() {
              }
 
             set_viewport(window.getSize().x, window.getSize().y);
-            std::cout<<"Look at: x->"<<centerx<<" y->"<<centery<<" z->"<<centerz<<std::endl;
+          //  std::cout<<"Look at: x->"<<centerx<<" y->"<<centery<<" z->"<<centerz<<std::endl;
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE) ;
@@ -112,13 +115,17 @@ int main() {
 //        glRotated(13*clock.getElapsedTime().asSeconds(),0,0,1);
 //        if(change_l)
 //        glRotated(-13*clock.getElapsedTime().asSeconds(),0,0,1);
-        create_world *world;
+
         world=new create_world(Texturs);
+        //hero =new Hero(centerx,centery+3,1,Texturs[2]);
+        hero =new Hero(0,0,1,Texturs[2]);
 
         clock.restart();
         window.display();
-        delete(world);
+
     }
+    delete(world);
+    delete(hero);
 
     return 0;
 }
@@ -172,6 +179,6 @@ void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,unsigned
     glGenTextures(1, &Texturs[i]);
     glBindTexture(GL_TEXTURE_2D, Texturs[i]);
     gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.getSize().x, Image.getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, Image.getPixelsPtr());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 }
