@@ -2,8 +2,10 @@
 #define CREATE_WORLD_H
 
 #include <SFML/OpenGL.hpp>
+#include <SFML/Graphics.hpp>
 #include <GL/glu.h>
 #include <vector>
+#include <string>
 
 
 class create_world
@@ -28,5 +30,18 @@ public:
     create_wall(const float &pos_x,const float &pos_y,const float &pos_z,
                 const char &direction,const GLint &tex,const float &length);
 };
+
+void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
+                 float &eyey,float &eyez,float &centerx, float &centery,
+                 float &centerz);
+void set_viewport(const int &width, const int &height,float &eyex,
+                  float &eyey, float &eyez,float &centerx, float &centery,
+                  float &centerz);
+
+void camera_setting(const float &mouse_sensitivity,
+                    unsigned int &temp_mouse_pos_x,sf::Vector2i &mouse_pos,
+                    sf::Clock &clock,float &eyex,float &eyey,float &eyez,
+                    float &centerx, float &centery, float &centerz);
+
 
 #endif // CREATE_WORLD_H

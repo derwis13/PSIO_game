@@ -2,27 +2,23 @@
 
 
 //#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 #include <iostream>
+#include <math.h>
 
 #include "create_world.h"
-#include "Hero.h"
+#include "Character.h"
 
-void move_camera(const sf::Clock &clk);
-void set_viewport(const int &width, const int &height);
 void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,unsigned int i);
-
-float eyex=0;
-float eyey=1;
-float eyez=3;
-
-float centerx=0;
-float centery=2;
-float centerz=3;
-bool change_l=false;
-bool change_r=false;
+float Hero::rot;
 
 int main() {
+    float eyex=0;
+    float eyey=5;
+    float eyez=3;
+
+    float centerx=eyex;
+    float centery=eyey+1;
+    float centerz=eyez;
     sf::Window window(sf::VideoMode(1024, 768), "Try to get out", sf::Style::Default, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
 
@@ -32,8 +28,9 @@ int main() {
     Load_Texture("wall.png",Texturs,Texturs.size());
     Load_Texture("grass.png",Texturs,Texturs.size());
     Load_Texture("my_head1.jpg",Texturs,Texturs.size());
+    Load_Texture("devil.jpg",Texturs,Texturs.size());
 
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0.3,0,0,0);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_SMOOTH);
@@ -60,10 +57,10 @@ int main() {
     bool running = true;
 
     create_world *world;
-    Hero *hero;
+    Character *character1,*character2;
 
     sf::Clock clock;
-    set_viewport(window.getSize().x, window.getSize().y);
+    set_viewport(window.getSize().x, window.getSize().y,eyex,eyey,eyez,centerx,centery,centerz);
     while (running) {
         sf::Event event;
         window.setFramerateLimit(60);
@@ -80,94 +77,52 @@ int main() {
             {
                 eyez+=1;
             }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                Hero::rotate_Character(0);
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                Hero::rotate_Character(90);
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                Hero::rotate_Character(-90);
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                Hero::rotate_Character(180);
             static sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-            int temp_mouse_pos_x=mouse_pos.x;
+            unsigned int temp_mouse_pos_x=mouse_pos.x;
             mouse_pos = sf::Mouse::getPosition(window);
-            float speed=1;
-            if(temp_mouse_pos_x<mouse_pos.x)
-            {
-              //  std::cout<<"Obroc w prawo"<<std::endl;
-                centerx+=speed*clock.getElapsedTime().asSeconds();
-                change_r=true;
-                change_l=false;
+            float mouse_sensitivity=2;
+            camera_setting(mouse_sensitivity,temp_mouse_pos_x,mouse_pos,clock,
+                           eyex,eyey,eyez,centerx,centery,centerz);
 
-            }
-            if(temp_mouse_pos_x>mouse_pos.x)
-            {
-              //  std::cout<<"Obroc w lewo"<<std::endl;
-
-              centerx-=speed*clock.getElapsedTime().asSeconds();
-              change_l=true;
-              change_r=false;
-
-             }
-
-            set_viewport(window.getSize().x, window.getSize().y);
-          //  std::cout<<"Look at: x->"<<centerx<<" y->"<<centery<<" z->"<<centerz<<std::endl;
+            set_viewport(window.getSize().x, window.getSize().y,
+                         eyex,eyey,eyez,centerx,centery,centerz);
+            // std::cout<<"Look at: x->"<<centerx<<" y->"<<centery<<" z->"<<centerz<<std::endl;
+            // std::cout<<"Stand at: x->"<<eyex<<" y->"<<eyey<<" z->"<<eyez<<std::endl;
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE) ;
         glEnable (GL_COLOR_MATERIAL);
 
-        move_camera(clock);
-        set_viewport(window.getSize().x, window.getSize().y);
-//        if(change_r)
-//        glRotated(13*clock.getElapsedTime().asSeconds(),0,0,1);
-//        if(change_l)
-//        glRotated(-13*clock.getElapsedTime().asSeconds(),0,0,1);
-
         world=new create_world(Texturs);
-        //hero =new Hero(centerx,centery+3,1,Texturs[2]);
-        hero =new Hero(0,0,1,Texturs[2]);
+        character1 =new Hero(centerx+1,centery+3,1,Texturs[2]);
+        character2 =new Enemy(Texturs[3]);
+
+
+
+        move_camera(clock,character1->pos_y_,character1->pos_z_,
+                    eyex,eyey,eyez,centerx,centery,centerz);
+        set_viewport(window.getSize().x, window.getSize().y,
+                     eyex,eyey,eyez,centerx,centery,centerz);
 
         clock.restart();
         window.display();
 
     }
     delete(world);
-    delete(hero);
+    delete(character1);
+    delete(character2);
 
     return 0;
 }
 
-
-void move_camera(const sf::Clock &clk)
-{
-    float speed=5;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-    {
-        eyey+=speed*clk.getElapsedTime().asSeconds();
-        centery+=speed*clk.getElapsedTime().asSeconds();
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-    {
-        eyey-=speed*clk.getElapsedTime().asSeconds();
-        centery-=speed*clk.getElapsedTime().asSeconds();
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-    {
-        eyex+=speed*clk.getElapsedTime().asSeconds();
-        centerx+=speed*clk.getElapsedTime().asSeconds();
-
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-    {
-        eyex-=speed*clk.getElapsedTime().asSeconds();
-        centerx-=speed*clk.getElapsedTime().asSeconds();
-    }
-}
-
-void set_viewport(const int &width,const int &height)
-{
-    const float ar = (float)width / (float)height;
-
-    glViewport(0, 0, width, height);
-
-    glMatrixMode(GL_MODULATE);
-    glLoadIdentity();
-    glFrustum(-ar, ar, -1.0, 1.0, 1.0, 100.0);
-    gluLookAt(eyex,eyey, eyez, centerx,centery,centerz, 0, 0, 1);
-}
 
 void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,unsigned int i)
 {
@@ -182,3 +137,5 @@ void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,unsigned
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 }
+
+

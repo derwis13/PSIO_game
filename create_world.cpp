@@ -14,7 +14,8 @@ create_world::create_world(const std::vector<GLuint>&Texture)
 //    class create_wall wall1(-7,0,0,'s',tex[0],40);
 //    class create_wall wall2(-39,8,0,'r',tex[0],40); //-(len-1),y+1,z,dorection,text_id,len
 //    class create_wall wall3(39,8,0,'l',tex[0],40);
-
+    walls.emplace_back(0,0,0,'l',tex[0],6);
+    walls.emplace_back(0,0,0,'r',tex[0],6);
     walls.emplace_back(7,0,0,'s',tex[0],40);
     walls.emplace_back(-7,0,0,'s',tex[0],40);
     walls.emplace_back(-39,8,0,'r',tex[0],40); //-(len-1),y+1,z,dorection,text_id,len
@@ -104,13 +105,13 @@ void create_world::create_ground(const float &size_map_x,
 {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, tex[1]);
-    glColor3d(1.0, 1.0, 1.0);
+    glColor3d(130.0, 130.0, 130.0);
     glBegin(GL_QUADS);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3d(-size_map_x,0,0);
     glTexCoord2f(0.0f, 1.0f);
     glVertex3d(-size_map_x,size_map_y,0);
-    glTexCoord2f(0.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3d(size_map_x,size_map_y,0);
     glTexCoord2f(1.0f,0.0f);
     glVertex3d(size_map_x,0,0);
