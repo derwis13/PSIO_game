@@ -1,12 +1,12 @@
 #define GL_SILENCE_DEPRECATION
 
 
-//#include <SFML/Window.hpp>
 #include <iostream>
 #include <math.h>
 
-#include "create_world.h"
+#include "world.h"
 #include "Character.h"
+
 
 void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,unsigned int i);
 float Hero::rot;
@@ -56,7 +56,7 @@ int main() {
     glEnable(GL_NORMALIZE) ;
     bool running = true;
 
-    create_world *world;
+    world *map;
     Character *character1,*character2;
 
     sf::Clock clock;
@@ -101,14 +101,14 @@ int main() {
         glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE) ;
         glEnable (GL_COLOR_MATERIAL);
 
-        world=new create_world(Texturs);
-        character1 =new Hero(centerx+1,centery+3,1,Texturs[2]);
+        map=new world(Texturs);
+        character1 =new Hero(eyex,eyey+3,1,Texturs[2]);
         character2 =new Enemy(Texturs[3]);
 
 
 
         move_camera(clock,character1->pos_y_,character1->pos_z_,
-                    eyex,eyey,eyez,centerx,centery,centerz);
+                    eyex,eyey,eyez,centerx,centery,centerz,character1,map);
         set_viewport(window.getSize().x, window.getSize().y,
                      eyex,eyey,eyez,centerx,centery,centerz);
 
@@ -116,7 +116,7 @@ int main() {
         window.display();
 
     }
-    delete(world);
+    delete(map);
     delete(character1);
     delete(character2);
 
@@ -137,5 +137,3 @@ void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,unsigned
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 }
-
-

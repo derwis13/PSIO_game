@@ -15,11 +15,11 @@ LIBS += -lOpenGL32 -lglu32
 SOURCES += \
         Character.cpp \
         camera.cpp \
-        create_world.cpp \
-        main.cpp
+        main.cpp \
+        world.cpp
 
 
 HEADERS += \
     Character.h \
-    create_world.h
+    world.h
 
