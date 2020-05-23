@@ -12,9 +12,9 @@ class Character;
 
 class world
 {
-    const float size_map_x=100,size_map_y=100;
-    void v_walls();
-    void create_ground(const float &size_map_x,const float &size_map_y);
+    float size_map_x=150,size_map_y=190;
+    void set_walls();
+    void create_ground(const float &size_map_x, float &size_map_y);
 public:
     std::vector<sf::FloatRect> rect;
     std::vector<GLuint>tex;
