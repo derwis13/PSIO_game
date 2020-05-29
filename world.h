@@ -12,10 +12,10 @@ class Character;
 
 class world
 {
-    float size_map_x=150,size_map_y=190;
     void set_walls();
     void create_ground(const float &size_map_x, float &size_map_y);
 public:
+    float size_map_x=150,size_map_y=190;
     std::vector<sf::FloatRect> rect;
     std::vector<GLuint>tex;
     world(const std::vector<GLuint>&Texture);

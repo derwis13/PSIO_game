@@ -1,9 +1,9 @@
 #include "Character.h"
-
+#include <iostream>
 
 
 Hero::Hero(const float &pos_x,const float &pos_y,const float &pos_z,
-           const GLint &tex)//:pos_x_(pos_x),pos_y_(pos_y),pos_z_(pos_z)
+           const GLint &tex)
 {
     pos_x_=pos_x;
     pos_y_=pos_y;
@@ -32,8 +32,12 @@ void Hero::draw_hero(const GLint &tex)
 
 
 
-Enemy::Enemy(const GLint &tex)
+Enemy::Enemy(const float &pos_x,const float &pos_y,const float &pos_z,
+             const GLint &tex)
 {
+    pos_x_=pos_x;
+    pos_y_=pos_y;
+    pos_z_=pos_z;
     glPushMatrix();
     draw_hero(tex);
     glPopMatrix();
@@ -50,5 +54,8 @@ void Enemy::draw_hero(const GLint &tex)
     gluQuadricTexture(sphere, GL_TRUE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
     gluSphere(sphere,1,25,25);
+    void a_star();
 
 }
+
+

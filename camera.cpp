@@ -200,8 +200,8 @@ bool colission(const world*w, const Character*h)
 
     for(int i=0; i!=w->rect.size(); i++)
     {
-        if(w->rect[i].intersects(h->rect_))
-            return true;
+        //if(w->rect[i].intersects(h->rect_))
+           // return true;
     }
     return false;
 }
