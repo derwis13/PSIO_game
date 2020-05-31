@@ -123,7 +123,7 @@ walls::walls(const float &pos_x,const float &pos_y,
              const float &pos_z,const char &direction,
              const GLint &tex,const float &length)
     :pos_x_(pos_x),pos_y_(pos_y),pos_z_(pos_z),
-      direction_(direction),length_(length)
+      length_(length),direction_(direction)
 {
     glPushMatrix();
     if(direction_=='r')
@@ -143,12 +143,11 @@ sf::FloatRect walls::get_parameters(const char &direction)
         sf::Rect rect(pos_x_,pos_y_,width_,length_);
         return rect;
     }
-    if(direction=='r')
+    else
     {
         sf::Rect rect(pos_y_,abs(pos_x_),length_,width_);
         return rect;
     }
-
 }
 void world::set_walls()
 {

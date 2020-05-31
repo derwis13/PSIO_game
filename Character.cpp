@@ -54,7 +54,6 @@ void Enemy::draw_hero(const GLint &tex)
     gluQuadricTexture(sphere, GL_TRUE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
     gluSphere(sphere,1,25,25);
-    void a_star();
 
 }
 

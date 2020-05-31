@@ -15,11 +15,14 @@ LIBS += -lOpenGL32 -lglu32
 SOURCES += \
         Character.cpp \
         camera.cpp \
+        colission.cpp \
         main.cpp \
+        menu.cpp \
         world.cpp
 
 
 HEADERS += \
     Character.h \
+    menu.h \
     world.h
 
