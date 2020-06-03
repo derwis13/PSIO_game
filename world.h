@@ -40,8 +40,8 @@ public:
     sf::FloatRect get_parameters(const char &direction);
 };
 
-void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
-                 float &eyey,float &centerx, float &centery,
+void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
+                 float &eyez,float &centerx, float &centery,float &centerz ,
                  Character*ch, world *w);
 void set_viewport(const int &width, const int &height,float &eyex,
                   float &eyey, float &eyez,float &centerx, float &centery,
@@ -55,7 +55,7 @@ bool colission(const world*w, const Character*h);
 
 void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
                int &pos_e_y, std::vector<char> &list_of_move,
-               const world*w);
+               const world*w,bool &colission_Enemy_Hero);
 
 
 #endif // CREATE_WORLD_H

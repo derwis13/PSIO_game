@@ -28,22 +28,31 @@ void draw_wall(const GLuint &tex)
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, tex);
 
+
     glColor3d(1,1,1);
     float val=1;
     // back
     glBegin(GL_POLYGON);
+    glTexCoord2f(1.0, 0.0);
     glVertex3d(-val,0,0);
+    glTexCoord2f(1.0, 1.0);
     glVertex3d(val,0,0);
+    glTexCoord2f(0.0, 1.0);
     glVertex3d(val,val,0);
+    glTexCoord2f(0.0, 0.0);
     glVertex3d(-val,val,0);
     glEnd();
 
     // front
 
     glBegin(GL_POLYGON);
+    glTexCoord2f(1.0, 0.0);
     glVertex3d(-val,0,val);
+    glTexCoord2f(1.0, 1.0);
     glVertex3d(val,0,val);
+    glTexCoord2f(0.0, 1.0);
     glVertex3d(val,val,val);
+    glTexCoord2f(0.0, 0.0);
     glVertex3d(-val,val,val);
     glEnd();
 
@@ -71,27 +80,28 @@ void draw_wall(const GLuint &tex)
     glVertex3d(val,0,val);
     glEnd();
 
-    //right
-    glBegin(GL_POLYGON);
-    glVertex3d(val,val,val);
-    glVertex3d(val,val,0);
-    glVertex3d(val,0,0);
-    glVertex3d(val,0,val);
-    glEnd();
 
     //top
     glBegin(GL_POLYGON);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3d(val,val,val);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3d(val,val,0);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3d(-val,val,0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3d(-val,val,val);
     glEnd();
 
     //bottom
     glBegin(GL_POLYGON);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3d(-val,0,val);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3d(val,0,val);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3d(val,0,0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3d(-val,0,0);
     glEnd();
     glDisable(GL_TEXTURE_2D);

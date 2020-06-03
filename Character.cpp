@@ -47,7 +47,7 @@ void Enemy::draw_hero(const GLint &tex)
 {
     glTranslated(pos_x_,pos_y_,pos_z_);
    // glRotated(180,0,0,1);
-    glRotated(0,0,0,1);
+    glRotated(rot,0,0,1);
     glRotated(180,1,0,0);
     gluQuadricDrawStyle(sphere, GLU_FILL);
     glBindTexture(GL_TEXTURE_2D, tex);

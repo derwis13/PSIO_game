@@ -18,11 +18,15 @@ SOURCES += \
         colission.cpp \
         main.cpp \
         menu.cpp \
+        network.cpp \
+        sound.cpp \
         world.cpp
 
 
 HEADERS += \
     Character.h \
     menu.h \
+    network.h \
+    sound.h \
     world.h
 

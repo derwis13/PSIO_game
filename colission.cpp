@@ -4,7 +4,7 @@
 
 bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
 {
-    sf::FloatRect rect(pos_e_x-2,pos_e_y-2,3,3);
+    sf::FloatRect rect(pos_e_x-1,pos_e_y-1,3,3);
     for(size_t i=0; i!=w->rect.size(); i++)
     {
         if(w->rect[i].intersects(rect))
@@ -15,7 +15,7 @@ bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
 
 void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
                int &pos_e_y,std::vector<char> &list_of_move,
-               const world* w)
+               const world* w,bool &colission_Enemy_Hero)
 {
     unsigned int i=0;
     size_t width_map=150,length_map=190;
@@ -30,7 +30,7 @@ void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
             board[w][j]=0;
     size_t number=1;
 
-    board[pos_h_x+1][pos_h_y]=-1;
+    board[pos_h_x][pos_h_y]=-1;
 
     do
     {
@@ -80,7 +80,7 @@ void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
         }
         if(board[pos_e_x][pos_e_y]!=0)
             break;
-        if(i>20000*500)
+        if(i>200*500)
             break;
 
     }while(!find_p);
@@ -109,6 +109,11 @@ void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
             temp_pos_e_y=temp_pos_e_y-1;
             list_of_move.emplace_back('d');
         }
+        if(pos_e_x==pos_h_x and pos_e_y==pos_h_y)
+        {
+            std::cout<<"colission"<<std::endl;
+            colission_Enemy_Hero=true;
+        }
 }
 
 bool colission(const world*w, const Character*h)
@@ -116,10 +121,11 @@ bool colission(const world*w, const Character*h)
 
     for(size_t i=0; i!=w->rect.size(); i++)
     {
-        //if(w->rect[i].intersects(h->rect_))
-        //   return true;
+        if(w->rect[i].intersects(h->rect_))
+           return true;
     }
     return false;
 }
+
 
 

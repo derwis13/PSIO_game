@@ -40,10 +40,11 @@ class Enemy:public Character
 {
 
 public:
+    static float rot;
     Enemy(const float &pos_x,const float &pos_y,const float &pos_z,
           const GLint &tex);
     void draw_hero(const GLint &tex);
-    friend bool colission(const world*, const Character*);
+    static void rotate_Character(float rotate){rot=rotate;}
 };
 
 #endif // HERO_H

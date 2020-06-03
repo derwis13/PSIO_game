@@ -1,6 +1,6 @@
 #include <iostream>
 #include "world.h"
-
+#include "Character.h"
 
 void camera_setting(const float &mouse_sensitivity,int &temp_mouse_pos_x,
                     sf::Vector2i &mouse_pos,sf::Clock &clock,float &eyex,float &eyey,
@@ -82,16 +82,17 @@ void camera_setting(const float &mouse_sensitivity,int &temp_mouse_pos_x,
     }
 }
 
-void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
-                 float &eyey,float &centerx, float &centery,
+void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
+                 float &eyez,float &centerx, float &centery,float  &centerz,
                  Character*ch, world *w)
 {
-    float speed=50;
+    float speed=3;
     static bool go_s=true,go_d=true,go_l=true,go_r=true;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) and go_s and
        !sf::Keyboard::isKeyPressed(sf::Keyboard::D) and
        !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
+        Hero::rotate_Character(0);
         if(!colission(w,ch))
         {
             eyey+=speed*clk.getElapsedTime().asSeconds();
@@ -114,6 +115,7 @@ void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
       !sf::Keyboard::isKeyPressed(sf::Keyboard::D) and
       !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
+         Hero::rotate_Character(180);
         if(!colission(w,ch))
         {
             eyey-=speed*clk.getElapsedTime().asSeconds();
@@ -134,6 +136,7 @@ void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) and go_r)
     {
+        Hero::rotate_Character(-90);
         if(!colission(w,ch))
         {
             eyex+=speed*clk.getElapsedTime().asSeconds();
@@ -156,6 +159,7 @@ void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) and go_l)
     {
+        Hero::rotate_Character(90);
         if(!colission(w,ch))
         {
             eyex-=speed*clk.getElapsedTime().asSeconds();
@@ -176,14 +180,22 @@ void move_camera(const sf::Clock &clk,float &pos_y,float &pos_z,float &eyex,
         }
     }
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-    {
-        float gravity=9.81;
-        float velocity_y=1,velocity_z=1;
-        pos_y+=velocity_y*clk.getElapsedTime().asSeconds();
-        pos_z+=velocity_z*clk.getElapsedTime().asSeconds();
-        velocity_z+=gravity*clk.getElapsedTime().asSeconds();
-    }
+
+//            float gravity=9.81;
+//            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+//            {
+//                eyez+=30*clk.getElapsedTime().asSeconds();
+//                centerz+=30*clk.getElapsedTime().asSeconds();
+//                eyey+=5*clk.getElapsedTime().asSeconds();
+//                centery+=5*clk.getElapsedTime().asSeconds();
+//            }
+//            if(eyez>3)
+//            {
+//                eyez-=gravity*clk.getElapsedTime().asSeconds();
+//                centerz-=gravity*clk.getElapsedTime().asSeconds();
+
+//            }
+
 
 
 }
