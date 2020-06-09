@@ -7,7 +7,7 @@ bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
     sf::FloatRect rect(pos_e_x-1,pos_e_y-1,3,3);
     for(size_t i=0; i!=w->rect.size(); i++)
     {
-        if(w->rect[i].intersects(rect))
+        if(rect.intersects(w->rect[i]))
            return true;
     }
     return false;
@@ -116,7 +116,7 @@ void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
         }
 }
 
-bool colission(const world*w, const Character*h)
+bool collision(const world*w, const Character*h)
 {
 
     for(size_t i=0; i!=w->rect.size(); i++)

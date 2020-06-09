@@ -15,7 +15,7 @@ LIBS += -lOpenGL32 -lglu32
 SOURCES += \
         Character.cpp \
         camera.cpp \
-        colission.cpp \
+        collision.cpp \
         main.cpp \
         menu.cpp \
         network.cpp \

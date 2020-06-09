@@ -1,4 +1,4 @@
-#define GL_SILENCE_DEPRECATION
+    #define GL_SILENCE_DEPRECATION
 
 #include <iostream>
 #include <math.h>
@@ -147,9 +147,12 @@ int main() {
     set_light();
     set_viewport(window.getSize().x, window.getSize().y,eyex,eyey,eyez,centerx,centery,centerz);
 
+    float temp_centerx=centerx,temp_centery=centery;
+    float alpha_radius=0;
 
     while (running) {
         sf::Event event;
+
         window.setFramerateLimit(60);
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -170,7 +173,8 @@ int main() {
             mouse_pos = sf::Mouse::getPosition(window);
             float mouse_sensitivity=2;
             camera_setting(mouse_sensitivity,temp_mouse_pos_x,mouse_pos,clock,
-                           eyex,eyey,centerx,centery);
+                           eyex,eyey,centerx,centery,temp_centerx,temp_centery,
+                           alpha_radius);
 
             set_viewport(window.getSize().x, window.getSize().y,
                          eyex,eyey,eyez,centerx,centery,centerz);
@@ -203,8 +207,8 @@ int main() {
             }
             bool colission_Enemy_Hero=false;
             character2 =new Enemy(pos_e_x,pos_e_y,pos_e_z,Texturs[3]);
-            int temp_pos_e_x=ceil(pos_e_x);
-            int temp_pos_e_y=ceil(pos_e_y);
+            int temp_pos_e_x=round(pos_e_x);
+            int temp_pos_e_y=round(pos_e_y);
             find_path(eyex,eyey,temp_pos_e_x,temp_pos_e_y,list_of_move,map,colission_Enemy_Hero);
             int speed_e=3;
             if(colission_Enemy_Hero)
@@ -242,7 +246,9 @@ int main() {
        // std::cout<<"pos x"<<eyex<<" pos y"<<eyey<<std::endl;
 
 
-        move_camera(clock,eyex,eyey,eyez,centerx,centery,centerz,character1,map);
+        move_camera(clock,eyex,eyey,eyez,centerx,centery,centerz,
+                    character1,map,temp_centerx,temp_centery,
+                    alpha_radius);
         set_viewport(window.getSize().x, window.getSize().y,
                      eyex,eyey,eyez,centerx,centery,centerz);
 

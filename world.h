@@ -21,8 +21,8 @@ public:
     world(const std::vector<GLuint>&Texture);
     std::vector<class walls> v_wall;
 
-    friend bool colission(const world*, const Character*);
-    friend bool colission_path(const world*,const int &pos_e_x,const int &pos_e_y);
+    friend bool collision(const world*, const Character*);
+    friend bool collision_path(const world*,const int &pos_e_x,const int &pos_e_y);
 
 };
 
@@ -42,7 +42,8 @@ public:
 
 void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
                  float &eyez,float &centerx, float &centery,float &centerz ,
-                 Character*ch, world *w);
+                 Character*ch, world *w,float &temp_centerx,
+                 float &temp_centery,float &alpha_radius);
 void set_viewport(const int &width, const int &height,float &eyex,
                   float &eyey, float &eyez,float &centerx, float &centery,
                   float &centerz);
@@ -50,8 +51,9 @@ void set_viewport(const int &width, const int &height,float &eyex,
 void camera_setting(const float &mouse_sensitivity,
                     int &temp_mouse_pos_x,sf::Vector2i &mouse_pos,
                     sf::Clock &clock,float &eyex,float &eyey,
-                    float &centerx, float &centery);
-bool colission(const world*w, const Character*h);
+                    float &centerx, float &centery,const float &temp_centerx,
+                    const float &temp_centery,float &alpha_radius);
+bool collision(const world*w, const Character*h);
 
 void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
                int &pos_e_y, std::vector<char> &list_of_move,

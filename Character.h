@@ -33,7 +33,7 @@ public:
     void draw_hero(const GLint &tex);
 
     static void rotate_Character(float rotate){rot=rotate;}
-    friend bool colission(const world*, const Character*);
+    friend bool collision(const world*, const Character*);
 };
 
 class Enemy:public Character
