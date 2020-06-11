@@ -20,6 +20,8 @@ world::world(const std::vector<GLuint>&Texture)
     }
     create_ground(size_map_x,size_map_y);
 
+   // create_ground_finish();
+
 }
 
 
@@ -127,6 +129,24 @@ void world::create_ground(const float &size_map_x,
     glEnd();
 }
 
+void world::create_ground_finish(const sf::FloatRect &fin)
+{
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, tex[4]);
+    glColor3d(120.0,120.0, 120.0);
+    glBegin(GL_QUADS);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3d(fin.left,fin.top,0.01);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3d(fin.left+fin.width,fin.top,0.01);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3d(fin.left+fin.width,fin.top+fin.height,0.01);
+    glTexCoord2f(1.0f,0.0f);
+    glVertex3d(fin.left,fin.top+fin.height,0.01);
+    glEnd();
+
+}
+
 
 
 walls::walls(const float &pos_x,const float &pos_y,
@@ -164,7 +184,7 @@ void world::set_walls()
     float entity=10;
 
     v_wall.emplace_back(-1,-4+entity,0,'r',tex[0],14*entity);
-    v_wall.emplace_back(-4-entity,0,0,'s',tex[0],19*entity);
+    v_wall.emplace_back(-1,0,0,'s',tex[0],19*entity);
     v_wall.emplace_back(-1,-4,0,'r',tex[0],1*entity-2);
     v_wall.emplace_back(5,0,0,'s',tex[0],2*entity);
     v_wall.emplace_back(-5,0,0,'s',tex[0],3*entity);
@@ -274,8 +294,8 @@ void world::set_walls()
     v_wall.emplace_back(-(17*entity)-1,-6+12*entity,0,'r',tex[0],3*entity+2);
     v_wall.emplace_back(-(17*entity)-1,-6+9*entity,0,'r',tex[0],1*entity+2);
     v_wall.emplace_back(-(17*entity)-1,-6+0*entity,0,'r',tex[0],1*entity+2);
-    v_wall.emplace_back(-(18*entity)-1,-6+0*entity,0,'r',tex[0],15*entity+2);
-    v_wall.emplace_back(-(19*entity)-1,-5-1*entity,0,'r',tex[0],15*entity+2);
+    v_wall.emplace_back(-(18*entity)-1,-6+2*entity,0,'r',tex[0],15*entity+2);
+    v_wall.emplace_back(-(19*entity)-1,-5-1*entity,0,'r',tex[0],16*entity+2);
     v_wall.emplace_back(15*entity-3,0,0,'s',tex[0],19*entity+2);
     v_wall.emplace_back(-5+1*entity,17*entity+2,0,'s',tex[0],1*entity-2);
     v_wall.emplace_back(-5+2*entity,17*entity,0,'s',tex[0],1*entity);

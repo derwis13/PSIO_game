@@ -14,7 +14,9 @@ class world
 {
     void set_walls();
     void create_ground(const float &size_map_x, float &size_map_y);
+
 public:
+    void  create_ground_finish(const sf::FloatRect &);
     float size_map_x=150,size_map_y=190;
     std::vector<sf::FloatRect> rect;
     std::vector<GLuint>tex;
@@ -40,24 +42,21 @@ public:
     sf::FloatRect get_parameters(const char &direction);
 };
 
-void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
-                 float &eyez,float &centerx, float &centery,float &centerz ,
-                 Character*ch, world *w,float &temp_centerx,
-                 float &temp_centery,float &alpha_radius);
-void set_viewport(const int &width, const int &height,float &eyex,
-                  float &eyey, float &eyez,float &centerx, float &centery,
-                  float &centerz);
+void move_camera(const sf::Clock &clk,sf::Vector3f &eye,sf::Vector3f &center,
+                 Character*ch, world *w,sf::Vector2f &temp_center,float &alpha_radius);
+
+void set_viewport(const sf::Vector2i &window_size, sf::Vector3f &eye,sf::Vector3f &center);
 
 void camera_setting(const float &mouse_sensitivity,
                     int &temp_mouse_pos_x,sf::Vector2i &mouse_pos,
-                    sf::Clock &clock,float &eyex,float &eyey,
-                    float &centerx, float &centery,const float &temp_centerx,
-                    const float &temp_centery,float &alpha_radius);
+                    sf::Clock &clock,sf::Vector3f &eye,sf::Vector3f &center,
+                    const sf::Vector2f &temp_center,float &alpha_radius);
+
 bool collision(const world*w, const Character*h);
 
-void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
-               int &pos_e_y, std::vector<char> &list_of_move,
-               const world*w,bool &colission_Enemy_Hero);
+void find_path(const sf::Vector2i &temp_eye, sf::Vector2i &temp_pos_e,
+               std::vector<char> &list_of_move, const world*w, bool &colission_Enemy_Hero,
+               int &distance);
 
 
 #endif // CREATE_WORLD_H

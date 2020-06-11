@@ -3,12 +3,12 @@
 #include "Character.h"
 #include <cmath>
 
-void camera_setting(const float &mouse_sensitivity,int &temp_mouse_pos_x,
-                    sf::Vector2i &mouse_pos,sf::Clock &clock,float &eyex,float &eyey,
-                    float &centerx, float &centery,const float &temp_centerx,
-                    const float &temp_centery,float &alpha_radius)
+void camera_setting(const float &mouse_sensitivity,
+                    int &temp_mouse_pos_x,sf::Vector2i &mouse_pos,
+                    sf::Clock &clock,sf::Vector3f &eye,sf::Vector3f &center,
+                    const sf::Vector2f &temp_center,float &alpha_radius)
 {
-    float dl_b=sqrt(pow(temp_centerx-eyex,2)+pow(temp_centery-eyey,2));
+    float dl_b=sqrt(pow(temp_center.x-eye.x,2)+pow(temp_center.y-eye.y,2));
     float stopnie=0;
     bool minus=false,plus=false;
     if(temp_mouse_pos_x<mouse_pos.x)
@@ -16,38 +16,38 @@ void camera_setting(const float &mouse_sensitivity,int &temp_mouse_pos_x,
         minus=false;
         plus=true;
         bool error=true;
-        if(centery<=eyey+1 and centerx>=eyex)
+        if(center.y<=eye.y+1 and center.x>=eye.x)
         {
-            if(centery>eyey)
+            if(center.y>eye.y)
             {
-                centerx+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             else
             {
-                centerx-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             error=false;
         }
-        if(centery<=eyey+1 and centerx<eyex)
+        if(center.y<=eye.y+1 and center.x<eye.x)
         {
-            if(centery>eyey)
+            if(center.y>eye.y)
             {
-                centerx+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             else
             {
-                centerx-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             error=false;
         }
         if(error)
         {
-            centery=eyey+1;
-            centerx=eyex;
+            center.y=eye.y+1;
+            center.x=eye.x;
         }
     }
     if(temp_mouse_pos_x>mouse_pos.x)
@@ -56,42 +56,42 @@ void camera_setting(const float &mouse_sensitivity,int &temp_mouse_pos_x,
         plus=false;
 
         bool error=true;
-        if(centery<=eyey+1 and centerx<=eyex)
+        if(center.y<=eye.y+1 and center.x<=eye.x)
         {
-            if(centery>eyey)
+            if(center.y>eye.y)
             {
-                centerx-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             else
             {
-                centerx+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             error=false;
         }
-        if(centery<=eyey+1 and centerx>eyex)
+        if(center.y<=eye.y+1 and center.x>eye.x)
         {
-            if(centery>eyey)
+            if(center.y>eye.y)
             {
-                centerx-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x-=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             else
             {
-                centerx+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
-                centery+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.x+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
+                center.y+=mouse_sensitivity*clock.getElapsedTime().asSeconds();
             }
             error=false;
         }
         if(error)
         {
-            centery=eyey+1;
-            centerx=eyex;
+            center.y=eye.y+1;
+            center.x=eye.x;
         }  
     }
-    float dl_a=sqrt(pow(temp_centerx-centerx,2)+pow(temp_centery-centery,2));
-    float dl_c=sqrt(pow(centerx-eyex,2)+pow(centery-eyey,2));
+    float dl_a=sqrt(pow(temp_center.x-center.x,2)+pow(temp_center.y-center.y,2));
+    float dl_c=sqrt(pow(center.x-eye.x,2)+pow(center.y-eye.y,2));
     float cos_a=(pow(dl_b,2)+pow(dl_c,2)-pow(dl_a,2))/(2*dl_b*dl_c);
     float a=acos(cos_a);
 
@@ -113,10 +113,8 @@ void camera_setting(const float &mouse_sensitivity,int &temp_mouse_pos_x,
 
 }
 
-void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
-                 float &eyez,float &centerx, float &centery,float  &centerz,
-                 Character*ch, world *w,float &temp_centerx,float &temp_centery,
-                 float &alpha_radius)
+void move_camera(const sf::Clock &clk,sf::Vector3f &eye,sf::Vector3f &center,
+                 Character*ch, world *w,sf::Vector2f &temp_center,float &alpha_radius)
 {
     float speed=3;
 
@@ -133,11 +131,11 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
         Hero::rotate_Character(-(alpha_radius*180/M_PI));
         if(!collision(w,ch))
         {
-            eyey+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centery+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.y+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.y+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
 
-            eyex+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centerx+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.x+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.x+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
             go_l=true;
             go_r=true;
             go_s=true;
@@ -148,11 +146,11 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
             go_d=true;
             go_l=true,
             go_r=true;
-            eyey-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centery-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.y-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.y-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
 
-            eyex-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centerx-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.x-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.x-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
         }
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) and go_d and
@@ -162,11 +160,11 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
          Hero::rotate_Character(-(alpha_radius*180/M_PI)-180);
         if(!collision(w,ch))
         {
-            eyey-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centery-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.y-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.y-=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
 
-            eyex-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centerx-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.x-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.x-=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
             go_l=true;
             go_r=true;
             go_s=true;
@@ -177,23 +175,23 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
             go_d=false;
             go_l=true,
             go_r=true;
-            eyey+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centery+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.y+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.y+=speed*cos(alpha_radius)*clk.getElapsedTime().asSeconds();
 
-            eyex+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
-            centerx+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            eye.x+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
+            center.x+=speed*sin(alpha_radius)*clk.getElapsedTime().asSeconds();
         }
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) and go_r)
     {
-        Hero::rotate_Character(-(alpha_radius*180/M_PI)-90);
+       Hero::rotate_Character(-(alpha_radius*180/M_PI)-90);
         if(!collision(w,ch))
         {
-            eyey-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centery-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.y-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.y-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
 
-            eyex-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centerx-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.x-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.x-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
             go_l=true;
             go_r=true;
             go_s=true;
@@ -205,11 +203,11 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
             go_d=true;
             go_l=true,
             go_r=false;
-            eyey+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centery+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.y+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.y+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
 
-            eyex+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centerx+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.x+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.x+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
         }
 
     }
@@ -218,11 +216,11 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
         Hero::rotate_Character(-(alpha_radius*180/M_PI)+90);
         if(!collision(w,ch))
         {
-            eyey+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centery+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.y+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.y+=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
 
-            eyex+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centerx+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.x+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.x+=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
             go_l=true;
             go_r=true;
             go_s=true;
@@ -234,15 +232,15 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
             go_d=true;
             go_l=false;
             go_r=true;
-            eyey-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centery-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.y-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.y-=speed*cos(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
 
-            eyex-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
-            centerx-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            eye.x-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
+            center.x-=speed*sin(alpha_radius-M_PI/2)*clk.getElapsedTime().asSeconds();
         }
     }
-    temp_centerx=eyex;
-    temp_centery=eyey+1;
+    temp_center.x=eye.x;
+    temp_center.y=eye.y+1;
     }
 
 
@@ -266,17 +264,16 @@ void move_camera(const sf::Clock &clk,float &eyex,float &eyey,
 
 }
 
-void set_viewport(const int &width,const int &height,float &eyex,float &eyey,
-                  float &eyez,float &centerx, float &centery, float &centerz)
+void set_viewport(const sf::Vector2i &window_size, sf::Vector3f &eye,sf::Vector3f &center)
 {
-    const float ar = (float)width / (float)height;
+    float ar = window_size.x / window_size.y;
 
-    glViewport(0, 0, width, height);
+    glViewport(0,0,window_size.x,window_size.y);
 
     glMatrixMode(GL_MODULATE);
     glLoadIdentity();
     glFrustum(-ar, ar, -1.0, 1.0, 1.0, 100.0);
-    gluLookAt(eyex,eyey, eyez, centerx,centery,centerz, 0, 0, 1);
+    gluLookAt(eye.x,eye.y,eye.z,center.x,center.y,center.z, 0, 0, 1);
 }
 
 

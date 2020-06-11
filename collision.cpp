@@ -13,9 +13,9 @@ bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
     return false;
 }
 
-void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
-               int &pos_e_y,std::vector<char> &list_of_move,
-               const world* w,bool &colission_Enemy_Hero)
+void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
+               std::vector<char> &list_of_move, const world* w,
+               bool &colission_Enemy_Hero,int &distance)
 {
     unsigned int i=0;
     size_t width_map=150,length_map=190;
@@ -23,14 +23,14 @@ void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
     bool find_p=false;
 
     std::queue<std::pair<size_t,size_t>> q;
-    q.emplace(pos_h_x,pos_h_y);
+    q.emplace(temp_eye.x,temp_eye.y);
 
     for(size_t w=0; w!=width_map; w++)
         for(size_t j=0; j!=length_map; j++)
             board[w][j]=0;
     size_t number=1;
 
-    board[pos_h_x][pos_h_y]=-1;
+    board[temp_eye.x][temp_eye.y]=-1;
 
     do
     {
@@ -78,38 +78,40 @@ void find_path(const int &pos_h_x,const int &pos_h_y,int &pos_e_x,
             }
             q.pop();
         }
-        if(board[pos_e_x][pos_e_y]!=0)
+        if(board[temp_pos_e.x][temp_pos_e.y]!=0)
             break;
-        if(i>200*500)
+        if(i>2000)
             break;
 
     }while(!find_p);
 
-    int temp_pos_e_x=pos_e_x;
-    int temp_pos_e_y=pos_e_y;
+    int temp_pos_e_x=temp_pos_e.x;
+    int temp_pos_e_y=temp_pos_e.y;
+    distance=board[temp_pos_e.x][temp_pos_e.y];
+
     list_of_move.clear();
 
-        if((board[temp_pos_e_x+1][temp_pos_e_y]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x+1][temp_pos_e_y]!=0) or temp_pos_e_x+1==pos_h_x)
+        if((board[temp_pos_e_x+1][temp_pos_e_y]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x+1][temp_pos_e_y]!=0) or temp_pos_e_x+1==temp_eye.x)
         {
             temp_pos_e_x=temp_pos_e_x+1;
             list_of_move.emplace_back('r');
         }
-        if((board[temp_pos_e_x-1][temp_pos_e_y]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x-1][temp_pos_e_y]!=0) or temp_pos_e_x-1==pos_h_x)
+        if((board[temp_pos_e_x-1][temp_pos_e_y]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x-1][temp_pos_e_y]!=0) or temp_pos_e_x-1==temp_eye.x)
         {
             temp_pos_e_x=temp_pos_e_x-1;
             list_of_move.emplace_back('l');
         }
-        if((board[temp_pos_e_x][temp_pos_e_y+1]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x][temp_pos_e_y+1]!=0) or temp_pos_e_y+1==pos_h_y)
+        if((board[temp_pos_e_x][temp_pos_e_y+1]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x][temp_pos_e_y+1]!=0) or temp_pos_e_y+1==temp_eye.y)
         {
             temp_pos_e_y=temp_pos_e_y+1;
             list_of_move.emplace_back('u');
         }
-        if((board[temp_pos_e_x][temp_pos_e_y-1]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x][temp_pos_e_y-1]!=0) or temp_pos_e_y-1==pos_h_y)
+        if((board[temp_pos_e_x][temp_pos_e_y-1]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x][temp_pos_e_y-1]!=0) or temp_pos_e_y-1==temp_eye.y)
         {
             temp_pos_e_y=temp_pos_e_y-1;
             list_of_move.emplace_back('d');
         }
-        if(pos_e_x==pos_h_x and pos_e_y==pos_h_y)
+        if(temp_pos_e.x==temp_eye.x and temp_pos_e.y==temp_eye.y)
         {
             std::cout<<"colission"<<std::endl;
             colission_Enemy_Hero=true;

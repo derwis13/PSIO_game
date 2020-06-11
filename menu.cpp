@@ -51,6 +51,19 @@ Menu::Menu(const int &width,const int &height)
     game_over_menu[1].setString("Exit");
     game_over_menu[1].setCharacterSize(100);
     game_over_menu[1].setPosition(sf::Vector2f(width/2-80,height/2));
+
+    coop_menu[0].setFont(font);
+    coop_menu[0].setColor(sf::Color::Red);
+    coop_menu[0].setString("Host a game");
+    coop_menu[0].setCharacterSize(160);
+    coop_menu[0].setPosition(sf::Vector2f(width/2-450,height/2-250));
+
+    coop_menu[1].setFont(font);
+    coop_menu[1].setColor(sf::Color::Yellow);
+    coop_menu[1].setString("Join a game");
+    coop_menu[1].setCharacterSize(160);
+    coop_menu[1].setPosition(sf::Vector2f(width/2-430,height/2));
+
     select_it=0;
 }
 
@@ -78,6 +91,15 @@ void Menu::game_over_menu_draw(sf::RenderWindow &window)
     }
 }
 
+void Menu::coop_menu_draw(sf::RenderWindow &window)
+{
+    for(int i=0; i<number_of_it_coop_menu; i++)
+    {
+        window.draw(coop_menu[i]);
+    }
+
+}
+
 void Menu::MoveUp()
 {
     if(actually_menu_==0)
@@ -100,6 +122,13 @@ void Menu::MoveUp()
             game_over_menu[select_it].setColor(sf::Color::Yellow);
             select_it--;
             game_over_menu[select_it].setColor(sf::Color::Red);
+        }
+    if(actually_menu_==4)
+        if(select_it -1>=0)
+        {
+            coop_menu[select_it].setColor(sf::Color::Yellow);
+            select_it--;
+            coop_menu[select_it].setColor(sf::Color::Red);
         }
 }
 
@@ -126,6 +155,13 @@ void Menu::MoveDown()
            select_it++;
            game_over_menu[select_it].setColor(sf::Color::Red);
        }
+   if(actually_menu_==4)
+       if(select_it+1<number_of_it_coop_menu)
+       {
+           coop_menu[select_it].setColor(sf::Color::Yellow);
+           select_it++;
+           coop_menu[select_it].setColor(sf::Color::Red);
+       }
 }
 
 void Menu::setBackground(sf::RenderWindow &window)
@@ -133,11 +169,22 @@ void Menu::setBackground(sf::RenderWindow &window)
     sf::Texture texture;
     if(actually_menu_==3)
     {
+        if(!win)
+        {
         texture.loadFromFile("game_over.jpg");
         sf::Sprite menu_s;
         menu_s.setTexture(texture);
         menu_s.setScale(0.65,0.7);
         window.draw(menu_s);
+        }
+        else
+        {
+            texture.loadFromFile("win_game.png");
+            sf::Sprite menu_s;
+            menu_s.setTexture(texture);
+            menu_s.setScale(2,1.5);
+            window.draw(menu_s);
+        }
     }
     else
     {
@@ -155,7 +202,8 @@ void Menu::actually_choose(const int &actually_menu)
     select_it=0;
 }
 
-void Menu::GameOver()
+void Menu::GameOver(const bool &win_)
 {
+    win=win_;
     actually_menu_=3;
 }
