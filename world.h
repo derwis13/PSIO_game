@@ -56,7 +56,7 @@ bool collision(const world*w, const Character*h);
 
 void find_path(const sf::Vector2i &temp_eye, sf::Vector2i &temp_pos_e,
                std::vector<char> &list_of_move, const world*w, bool &colission_Enemy_Hero,
-               int &distance);
+               int &distance,char **board,const sf::Vector2i &map_size);
 
 
 #endif // CREATE_WORLD_H

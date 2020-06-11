@@ -173,7 +173,7 @@ sf::FloatRect walls::get_parameters(const char &direction)
         sf::Rect rect(pos_x_,pos_y_,width_,length_);
         return rect;
     }
-    else
+    if(direction=='r')
     {
         sf::Rect rect(pos_y_,abs(pos_x_),length_,width_);
         return rect;

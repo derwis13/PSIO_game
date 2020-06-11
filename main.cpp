@@ -141,9 +141,16 @@ int main() {
         int option=rand()%5+1;
 
         sf::Vector3f eye(2,5,3);
+      //  sf::Vector3f eye(5,20,3);
         sf::Vector3f pos_e(2,5,1);
         sf::Vector3f center(eye.x,eye.y+1,eye.z);
         sf::Vector3f fr_eye=eye;
+
+        sf::Vector2i map_size(150,190);
+
+        char **board = new char *[map_size.x];
+        for (unsigned int w = 0; w<map_size.x; w++)
+            board[w] = new char [map_size.y];
 
 
         bool running = true;
@@ -276,7 +283,7 @@ int main() {
                 character2 =new Enemy(pos_e,Texturs[3]);
                 sf::Vector2i temp_pos_e(pos_e.x,pos_e.y);
                 sf::Vector2i temp_eye(eye.x,eye.y);
-                find_path(temp_eye,temp_pos_e,list_of_move,map,colission_Enemy_Hero,distance);
+                find_path(temp_eye,temp_pos_e,list_of_move,map,colission_Enemy_Hero,distance,board,map_size);
                 int speed_e=3;
 
 
@@ -345,6 +352,11 @@ int main() {
         {
             glDeleteTextures(1,&Texturs[i]);
         }
+
+        for (unsigned int w = 0; w<map_size.x; w++)
+            delete [] board[w];
+
+        delete [] board;
 
         //\\\\\\\\\\\\\\\\\\\\#############MENU#######################\\\\\\\\//
 

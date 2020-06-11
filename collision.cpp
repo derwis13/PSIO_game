@@ -2,120 +2,132 @@
 #include "world.h"
 #include "Character.h"
 
+struct str_findpathing
+{
+    int value;
+    int i;
+    int x;
+    int y;
+};
+
+struct compare
+{
+    template < class T > bool operator ()( const T & el_1, const T & el_2) const {
+        return el_1.value > el_2.value;
+    }
+};
+
+int heuristics(const sf::Vector2i &temp_pos_e,const int &square_x,const int &square_y)
+{
+    int heur=abs(temp_pos_e.x-square_x)+abs(temp_pos_e.y-square_y);
+        return heur;
+}
+
 bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
 {
     sf::FloatRect rect(pos_e_x-1,pos_e_y-1,3,3);
     for(size_t i=0; i!=w->rect.size(); i++)
     {
+
         if(rect.intersects(w->rect[i]))
+        {
            return true;
+        }
     }
     return false;
 }
 
 void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
                std::vector<char> &list_of_move, const world* w,
-               bool &colission_Enemy_Hero,int &distance)
+               bool &colission_Enemy_Hero,int &distance, char **board,const sf::Vector2i &map_size)
 {
-    unsigned int i=0;
-    size_t width_map=150,length_map=190;
-    float board[width_map][length_map];
+
+
     bool find_p=false;
 
-    std::queue<std::pair<size_t,size_t>> q;
-    q.emplace(temp_eye.x,temp_eye.y);
+//    std::queue<std::pair<size_t,size_t>> q;
+//    q.emplace(temp_eye.x,temp_eye.y);
 
-    for(size_t w=0; w!=width_map; w++)
-        for(size_t j=0; j!=length_map; j++)
-            board[w][j]=0;
-    size_t number=1;
 
-    board[temp_eye.x][temp_eye.y]=-1;
+    for(unsigned int w=0; w!=map_size.x; w++)
+        for(unsigned int j=0; j!=map_size.y; j++)
+            board[w][j]='0';
+
+
+   std::priority_queue < str_findpathing, std::vector < str_findpathing >, compare > q;
+   q.push({0,0,temp_eye.x,temp_eye.y});
+
+
+  //  size_t number=1;
+
+
+ //   board[temp_eye.x][temp_eye.y]='w';
 
     do
     {
-        size_t temp=number;
-        number=0;
-        i++;
-        for(size_t j=0; j!=temp; j++)
+        sf::Vector2i actually_square(q.top().x,q.top().y);
+        int i=q.top().i+1;
+      //  std::cout<<actually_square.x<<std::endl;
+        if(actually_square.x<map_size.x and actually_square.y<map_size.y)
         {
-            if(board[q.front().first+1][q.front().second]==0 and
-                    !colission_path(w,q.front().first+2,q.front().second) and
-                    !colission_path(w,q.front().first+1,q.front().second) and
-                    q.front().first+1<width_map)
+            if(board[actually_square.x+1][actually_square.y]=='0' and
+          //          !colission_path(w,actually_square.x+2,actually_square.y) and
+                    !colission_path(w,actually_square.x+1,actually_square.y))
             {
-                q.emplace(q.front().first+1,q.front().second);
-                board[q.front().first+1][q.front().second]=i;
-                number++;
+               // std::cout<<"wlaczono"<<std::endl;
+                int f=i+heuristics(temp_pos_e,actually_square.x+1,actually_square.y);
+                q.push({f,i,actually_square.x+1,actually_square.y});
+                board[actually_square.x+1][actually_square.y]='l';
             }
 
-            if(board[q.front().first-1][q.front().second]==0 and q.front().first!=0 and
-                    !colission_path(w,q.front().first-2,q.front().second) and
-                   !colission_path(w,q.front().first-1,q.front().second))
+            if(board[actually_square.x][actually_square.y+1]=='0' and
+            //        !colission_path(w,actually_square.x,actually_square.y+2) and
+                    !colission_path(w,actually_square.x,actually_square.y+1))
             {
-                q.emplace(q.front().first-1,q.front().second);
-                board[q.front().first-1][q.front().second]=i;
-                number++;
+                int f=i+1+heuristics(temp_pos_e,actually_square.x,actually_square.y+1);
+                q.push({f,i,actually_square.x,actually_square.y+1});
+                board[actually_square.x][actually_square.y+1]='d';
             }
-
-            if(board[q.front().first][q.front().second+1]==0 and
-                    !colission_path(w,q.front().first,q.front().second+2) and
-                    !colission_path(w,q.front().first,q.front().second+1) and
-                    q.front().second+1<length_map)
-            {
-                q.emplace(q.front().first,q.front().second+1);
-                board[q.front().first][q.front().second+1]=i;
-                number++;
-            }
-
-            if(board[q.front().first][q.front().second-1]==0 and q.front().second!=0 and
-                    !colission_path(w,q.front().first,q.front().second-2) and
-                    !colission_path(w,q.front().first,q.front().second-1))
-            {
-                q.emplace(q.front().first,q.front().second-1);
-                board[q.front().first][q.front().second-1]=i;
-                number++;
-            }
-            q.pop();
         }
-        if(board[temp_pos_e.x][temp_pos_e.y]!=0)
+        if(actually_square.x>1 and actually_square.y>1)
+        {
+            if(board[actually_square.x-1][actually_square.y]=='0' and
+            //        !colission_path(w,actually_square.x-2,actually_square.y) and
+                    !colission_path(w,actually_square.x-1,actually_square.y))
+            {
+
+                int f=i+heuristics(temp_pos_e,actually_square.x-1,actually_square.y);
+                q.push({f,i,actually_square.x-1,actually_square.y});
+                board[actually_square.x-1][actually_square.y]='r';
+            }
+            if(board[actually_square.x][actually_square.y-1]=='0' and
+           //         !colission_path(w,actually_square.x,actually_square.y-2) and
+                    !colission_path(w,actually_square.x,actually_square.y-1))
+            {
+                int f=i+heuristics(temp_pos_e,actually_square.x,actually_square.y-1);
+                q.push({f,i,actually_square.x,actually_square.y-1});
+                board[actually_square.x][actually_square.y-1]='u';
+            }
+         }
+            q.pop();
+            distance=i;
+
+        if(board[temp_pos_e.x][temp_pos_e.y]!='0')
+        {
             break;
-        if(i>2000)
-            break;
+       }
+    }while(!q.empty());
 
-    }while(!find_p);
 
-    int temp_pos_e_x=temp_pos_e.x;
-    int temp_pos_e_y=temp_pos_e.y;
-    distance=board[temp_pos_e.x][temp_pos_e.y];
-
+    std::cout<<distance<<std::endl;
     list_of_move.clear();
 
-        if((board[temp_pos_e_x+1][temp_pos_e_y]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x+1][temp_pos_e_y]!=0) or temp_pos_e_x+1==temp_eye.x)
-        {
-            temp_pos_e_x=temp_pos_e_x+1;
-            list_of_move.emplace_back('r');
-        }
-        if((board[temp_pos_e_x-1][temp_pos_e_y]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x-1][temp_pos_e_y]!=0) or temp_pos_e_x-1==temp_eye.x)
-        {
-            temp_pos_e_x=temp_pos_e_x-1;
-            list_of_move.emplace_back('l');
-        }
-        if((board[temp_pos_e_x][temp_pos_e_y+1]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x][temp_pos_e_y+1]!=0) or temp_pos_e_y+1==temp_eye.y)
-        {
-            temp_pos_e_y=temp_pos_e_y+1;
-            list_of_move.emplace_back('u');
-        }
-        if((board[temp_pos_e_x][temp_pos_e_y-1]<board[temp_pos_e_x][temp_pos_e_y] and board[temp_pos_e_x][temp_pos_e_y-1]!=0) or temp_pos_e_y-1==temp_eye.y)
-        {
-            temp_pos_e_y=temp_pos_e_y-1;
-            list_of_move.emplace_back('d');
-        }
-        if(temp_pos_e.x==temp_eye.x and temp_pos_e.y==temp_eye.y)
-        {
-            std::cout<<"colission"<<std::endl;
-            colission_Enemy_Hero=true;
-        }
+    list_of_move.emplace_back(board[temp_pos_e.x][temp_pos_e.y]);
+
+    if(temp_eye==temp_pos_e)
+        colission_Enemy_Hero=true;
+
+
 }
 
 bool collision(const world*w, const Character*h)
