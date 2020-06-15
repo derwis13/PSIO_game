@@ -55,7 +55,7 @@ void camera_setting(const float &mouse_sensitivity,
 bool collision(const world*w, const Character*h);
 
 void find_path(const sf::Vector2i &temp_eye, sf::Vector2i &temp_pos_e,
-               std::vector<char> &list_of_move, const world*w, bool &colission_Enemy_Hero,
+               std::vector<char> &list_of_move, const world*w, bool &collision_Enemy_Hero,
                int &distance,char **board,const sf::Vector2i &map_size);
 
 

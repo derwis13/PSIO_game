@@ -41,7 +41,7 @@ class Enemy:public Character
 
 public:
     static float rot;
-    Enemy(const sf::Vector3f &pos_e, const GLint &tex);
+    Enemy(const sf::Vector3f &pos_e, const GLint &tex,float &rot);
     void draw_hero(const GLint &tex,float &rot);
     static void rotate_Character(float rotate){rot=rotate;}
 };

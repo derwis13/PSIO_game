@@ -32,7 +32,7 @@ void Hero::draw_hero(const GLint &tex, float &rot)
 
 
 
-Enemy::Enemy(const sf::Vector3f &pos_e, const GLint &tex)
+Enemy::Enemy(const sf::Vector3f &pos_e, const GLint &tex, float &rot)
 {
     pos_x_=pos_e.x;
     pos_y_=pos_e.y;

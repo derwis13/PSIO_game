@@ -39,15 +39,9 @@ bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
 
 void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
                std::vector<char> &list_of_move, const world* w,
-               bool &colission_Enemy_Hero,int &distance, char **board,const sf::Vector2i &map_size)
+               bool &collision_Enemy_Hero,int &distance, char **board,const sf::Vector2i &map_size)
 {
-
-
     bool find_p=false;
-
-//    std::queue<std::pair<size_t,size_t>> q;
-//    q.emplace(temp_eye.x,temp_eye.y);
-
 
     for(unsigned int w=0; w!=map_size.x; w++)
         for(unsigned int j=0; j!=map_size.y; j++)
@@ -56,12 +50,6 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
 
    std::priority_queue < str_findpathing, std::vector < str_findpathing >, compare > q;
    q.push({0,0,temp_eye.x,temp_eye.y});
-
-
-  //  size_t number=1;
-
-
- //   board[temp_eye.x][temp_eye.y]='w';
 
     do
     {
@@ -116,14 +104,12 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
        }
     }while(!q.empty());
 
-
-   // std::cout<<distance<<std::endl;
     list_of_move.clear();
 
     list_of_move.emplace_back(board[temp_pos_e.x][temp_pos_e.y]);
 
     if(temp_eye==temp_pos_e)
-        colission_Enemy_Hero=true;
+        collision_Enemy_Hero=true;
 
 
 }
