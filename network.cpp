@@ -6,13 +6,6 @@
 
 Network::Network()
 {
-    sf::IpAddress ip_;
-    std::cout<<"Your ip :"<<sf::IpAddress::getLocalAddress()<<std::endl;
-    std::cout<<"Entrer your friend's IP address:"<<std::endl;
-    std::cin>>ip_;
-    ip=ip_;
-    std::cout<<ip<<std::endl;
-
     sock.setBlocking(false);
     if (sock.bind(port)!= sf::Socket::Done )
     {
@@ -24,6 +17,16 @@ Network::Network()
     {
         std::cerr<<"error"<<std::endl;
     }
+}
+
+void Network::set_ip()
+{
+    sf::IpAddress ip_;
+    std::cout<<"Your ip :"<<sf::IpAddress::getLocalAddress()<<std::endl;
+    std::cout<<"Entrer your friend's IP address:"<<std::endl;
+    std::cin>>ip_;
+    ip=ip_;
+    std::cout<<ip<<std::endl;
 }
 
 void Network::seting_host()

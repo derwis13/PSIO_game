@@ -137,6 +137,10 @@ int main() {
 
     do
     {
+
+        if(coop_mode)
+            net.set_ip();
+
         srand (time(NULL));
         int option=rand()%5+1;
 
@@ -188,7 +192,8 @@ int main() {
 
         Load_Texture("wall.png",Texturs,Texturs.size());
         Load_Texture("grass.png",Texturs,Texturs.size());
-        Load_Texture("my_head1.jpg",Texturs,Texturs.size());
+       // Load_Texture("my_head1.jpg",Texturs,Texturs.size());
+        Load_Texture("iron.png",Texturs,Texturs.size());
         Load_Texture("devil.jpg",Texturs,Texturs.size());
         Load_Texture("finish.jpg",Texturs,Texturs.size());
 
@@ -262,19 +267,19 @@ int main() {
 
             std::vector<char> list_of_move;
 
-            if(time_of_game.getElapsedTime().asSeconds()<=10 and sound0->music.getStatus()==0)
+            if(time_of_game.getElapsedTime().asSeconds()<=20 and sound0->music.getStatus()==0)
             {
                 sound0->Play_Sound();
                 sound0->music.setLoop(true);
             }
-            if(time_of_game.getElapsedTime().asSeconds()>=10)
+            if(time_of_game.getElapsedTime().asSeconds()>=20)
             {
                 if(sound1->music.getStatus()==0)
                 {
                     sound0->Stop_Sound();
                     sound1->Play_Sound();
                 }
-                if(sound2->music.getStatus()==0 and time_of_game.getElapsedTime().asSeconds()>=16)
+                if(sound2->music.getStatus()==0 and time_of_game.getElapsedTime().asSeconds()>=26)
                 {
                     sound2->Play_Sound();
                     sound2->music.setLoop(true);

@@ -9,6 +9,7 @@ class Network
 {
 public:
     Network();
+    void set_ip();
     void Send();
     void Send_pos(sf::Vector3f &eye,float &rot);
     void Receive();

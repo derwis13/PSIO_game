@@ -67,24 +67,22 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
     {
         sf::Vector2i actually_square(q.top().x,q.top().y);
         int i=q.top().i+1;
-      //  std::cout<<actually_square.x<<std::endl;
         if(actually_square.x<map_size.x and actually_square.y<map_size.y)
         {
             if(board[actually_square.x+1][actually_square.y]=='0' and
-          //          !colission_path(w,actually_square.x+2,actually_square.y) and
+                    !colission_path(w,actually_square.x+2,actually_square.y) and
                     !colission_path(w,actually_square.x+1,actually_square.y))
             {
-               // std::cout<<"wlaczono"<<std::endl;
                 int f=i+heuristics(temp_pos_e,actually_square.x+1,actually_square.y);
                 q.push({f,i,actually_square.x+1,actually_square.y});
                 board[actually_square.x+1][actually_square.y]='l';
             }
 
             if(board[actually_square.x][actually_square.y+1]=='0' and
-            //        !colission_path(w,actually_square.x,actually_square.y+2) and
+                    !colission_path(w,actually_square.x,actually_square.y+2) and
                     !colission_path(w,actually_square.x,actually_square.y+1))
             {
-                int f=i+1+heuristics(temp_pos_e,actually_square.x,actually_square.y+1);
+                int f=i+heuristics(temp_pos_e,actually_square.x,actually_square.y+1);
                 q.push({f,i,actually_square.x,actually_square.y+1});
                 board[actually_square.x][actually_square.y+1]='d';
             }
@@ -92,7 +90,7 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
         if(actually_square.x>1 and actually_square.y>1)
         {
             if(board[actually_square.x-1][actually_square.y]=='0' and
-            //        !colission_path(w,actually_square.x-2,actually_square.y) and
+                    !colission_path(w,actually_square.x-2,actually_square.y) and
                     !colission_path(w,actually_square.x-1,actually_square.y))
             {
 
@@ -101,7 +99,7 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
                 board[actually_square.x-1][actually_square.y]='r';
             }
             if(board[actually_square.x][actually_square.y-1]=='0' and
-           //         !colission_path(w,actually_square.x,actually_square.y-2) and
+                    !colission_path(w,actually_square.x,actually_square.y-2) and
                     !colission_path(w,actually_square.x,actually_square.y-1))
             {
                 int f=i+heuristics(temp_pos_e,actually_square.x,actually_square.y-1);
@@ -119,7 +117,7 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
     }while(!q.empty());
 
 
-    std::cout<<distance<<std::endl;
+   // std::cout<<distance<<std::endl;
     list_of_move.clear();
 
     list_of_move.emplace_back(board[temp_pos_e.x][temp_pos_e.y]);
