@@ -15,7 +15,8 @@ void Load_Texture(const std::string &nazwa,std::vector<GLuint> &Texturs,
 void set_light();
 
 void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
-                       Sound *sound1,Sound *sound2,Sound *sound0,bool &running,Menu &menu);
+                       Sound *sound1,Sound *sound2,Sound *sound0,bool &running,Menu &menu,
+                       std::string &game_status);
 float Hero::rot;
 float Enemy::rot;
 
@@ -137,6 +138,7 @@ int main() {
 
     do
     {
+        std::string game_status="";
 
         if(coop_mode)
             net.set_ip();
@@ -241,6 +243,23 @@ int main() {
             glEnable (GL_COLOR_MATERIAL);
 
 
+            bool colission_Enemy_Hero=false;
+            if(game_status=="lose")
+                colission_Enemy_Hero=true;
+            if(coop_mode)
+            {
+                if(host)
+                {
+                net.Receive_status(game_status);
+                net.Send_status(game_status);
+                }
+                else
+                {
+                net.Send_status(game_status);
+                net.Receive_status(game_status);
+                }
+            }
+
             static float rot=0;
             static int distance=0;
 
@@ -261,7 +280,8 @@ int main() {
                 character3 =new Hero(fr_eye.x,fr_eye.y,1,Texturs[2],rot);
             }
 
-            set_finish_square(option,map,eye,sound1,sound2,sound0,running,menu);
+            set_finish_square(option,map,eye,sound1,sound2,sound0,running,menu,
+                              game_status);
             if(!running)
                 break;
 
@@ -284,8 +304,8 @@ int main() {
                     sound2->Play_Sound();
                     sound2->music.setLoop(true);
                 }
-                bool colission_Enemy_Hero=false;
-                character2 =new Enemy(pos_e,Texturs[3]);
+
+                character2 =new Enemy(pos_e,Texturs[3],Enemy::rot);
                 sf::Vector2i temp_pos_e(pos_e.x,pos_e.y);
                 sf::Vector2i temp_eye(eye.x,eye.y);
                 find_path(temp_eye,temp_pos_e,list_of_move,map,colission_Enemy_Hero,distance,board,map_size);
@@ -298,6 +318,7 @@ int main() {
                     sound1->Stop_Sound();
                     running=false;
                     menu.GameOver(false);
+                    game_status="lose";
 
                 }
                 sf::Vector3f temp_position_e=pos_e;
@@ -448,7 +469,8 @@ void set_light()
 }
 
 void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
-                       Sound *sound1,Sound *sound2,Sound *sound0,bool &running,Menu &menu)
+                       Sound *sound1,Sound *sound2,Sound *sound0,bool &running,Menu &menu,
+                       std::string &game_status)
 {
     switch (option)
     {
@@ -456,13 +478,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(130,180,20,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y))
+        if(fin.contains(eye.x,eye.y) or game_status=="win")
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
+            game_status="win";
         }
         break;
     }
@@ -470,13 +493,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(36,138,18,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y))
+        if(fin.contains(eye.x,eye.y) or game_status=="win")
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
+            game_status="win";
         }
         break;
     }
@@ -484,13 +508,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(45,110,9,8);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y))
+        if(fin.contains(eye.x,eye.y) or game_status=="win")
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
+            game_status="win";
         }
         break;
     }
@@ -498,13 +523,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(115,138,8,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y))
+        if(fin.contains(eye.x,eye.y) or game_status=="win")
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
+            game_status="win";
         }
         break;
     }
@@ -512,13 +538,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(125,50,12,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y))
+        if(fin.contains(eye.x,eye.y) or game_status=="win")
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
+            game_status="win";
         }
         break;
     }

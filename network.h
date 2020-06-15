@@ -17,15 +17,18 @@ public:
     int Receive_distance(sf::Vector3f &pos_e);
     void Send_distance(const int &distance,sf::Vector3f &pos_e);
     void seting_host();
+    void Send_status(std::string &game_status);
+    void Receive_status(std::string &game_status);
 private:
     sf::Packet pack;
-    sf::UdpSocket sock;
-    sf::UdpSocket sock1;
+    sf::UdpSocket sock,sock1,sock2;
     sf::IpAddress ip="192.168.0.102";
     unsigned short port=56000;
     unsigned short sender_port=54000;
     unsigned short port_distance=52000;
     unsigned short sender_port_distance=50000;
+    unsigned short port_status=48000;
+    unsigned short sender_port_status=46000;
 };
 
 #endif // NETWORK_H

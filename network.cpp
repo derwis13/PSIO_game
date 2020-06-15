@@ -17,6 +17,11 @@ Network::Network()
     {
         std::cerr<<"error"<<std::endl;
     }
+    sock2.setBlocking(false);
+    if (sock2.bind(port_status)!= sf::Socket::Done )
+    {
+        std::cerr<<"error"<<std::endl;
+    }
 }
 
 void Network::set_ip()
@@ -31,25 +36,24 @@ void Network::set_ip()
 
 void Network::seting_host()
 {
-//    unsigned short temporary=port;
-//    port=sender_port;
-//    sender_port=temporary;
 
-//    temporary=port_distance;
-//    port_distance=sender_port_distance;
-//    sender_port_distance=temporary;
-
-//    std::cout<<port<<std::endl;
     std::swap(port,sender_port);
     std::swap(port_distance,sender_port_distance);
+    std::swap(port_status,sender_port_status);
 
     sock.unbind();
     sock1.unbind();
+    sock2.unbind();
+
     if (sock.bind(port)!= sf::Socket::Done )
     {
         std::cerr<<"error"<<std::endl;
     }
     if (sock1.bind(port_distance)!= sf::Socket::Done )
+    {
+        std::cerr<<"error"<<std::endl;
+    }
+    if (sock2.bind(port_status)!= sf::Socket::Done )
     {
         std::cerr<<"error"<<std::endl;
     }
@@ -126,4 +130,22 @@ int Network::Receive_distance(sf::Vector3f &pos_e)
         }
 
     return temp_distance;
+}
+
+void Network::Send_status(std::string &game_status)
+{
+    pack<<game_status;
+    if(sock1.send(pack,ip,sender_port_distance)==sf::Socket::Done)
+    {
+        pack.clear();
+    }
+}
+void Network::Receive_status(std::string &game_status)
+{
+    if(sock2.receive(pack,ip,port_status)!=sf::Socket::NotReady)
+        if(pack>>game_status)
+        {
+            pack.clear();
+        }
+
 }
