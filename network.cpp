@@ -6,6 +6,19 @@
 
 Network::Network()
 {
+}
+
+void Network::set_ip()
+{
+
+    sf::IpAddress ip_;
+    std::cout<<"Your ip :"<<sf::IpAddress::getLocalAddress()<<std::endl;
+    std::cout<<"Entrer your friend's IP address:"<<std::endl;
+    std::cin>>ip_;
+    ip=ip_;
+    std::cout<<ip<<std::endl;
+
+
     sock.setBlocking(false);
     if (sock.bind(port)!= sf::Socket::Done )
     {
@@ -17,21 +30,6 @@ Network::Network()
     {
         std::cerr<<"error"<<std::endl;
     }
-    sock2.setBlocking(false);
-    if (sock2.bind(port_status)!= sf::Socket::Done )
-    {
-        std::cerr<<"error"<<std::endl;
-    }
-}
-
-void Network::set_ip()
-{
-    sf::IpAddress ip_;
-    std::cout<<"Your ip :"<<sf::IpAddress::getLocalAddress()<<std::endl;
-    std::cout<<"Entrer your friend's IP address:"<<std::endl;
-    std::cin>>ip_;
-    ip=ip_;
-    std::cout<<ip<<std::endl;
 }
 
 void Network::seting_host()
@@ -39,11 +37,9 @@ void Network::seting_host()
 
     std::swap(port,sender_port);
     std::swap(port_distance,sender_port_distance);
-    std::swap(port_status,sender_port_status);
 
     sock.unbind();
     sock1.unbind();
-    sock2.unbind();
 
     if (sock.bind(port)!= sf::Socket::Done )
     {
@@ -53,19 +49,15 @@ void Network::seting_host()
     {
         std::cerr<<"error"<<std::endl;
     }
-    if (sock2.bind(port_status)!= sf::Socket::Done )
-    {
-        std::cerr<<"error"<<std::endl;
-    }
 }
 
-void Network::Send()
+void Network::Send(const int &option)
 {
-    char buffer[]="HI, I'm Kuba. Let's go?";
-    std::cout<<sizeof (buffer)<<std::endl;
-    if(sock.send(buffer,sizeof (buffer),ip,sender_port)!= sf::Socket::Done)
+    pack<<option;
+
+    if(sock.send(pack,ip,sender_port)==sf::Socket::Done)
     {
-        std::cerr<<"error"<<std::endl;
+        pack.clear();
     }
 
 }
@@ -81,29 +73,27 @@ void Network::Send_pos(sf::Vector3f &eye,float &rot)
 
 }
 
-void Network::Send_distance(const int &distance,sf::Vector3f &pos_e)
+void Network::Send_distance(const int &distance,sf::Vector3f &pos_e, float &rot)
 {
-    pack<<distance<<pos_e.x<<pos_e.y<<pos_e.z;
+    pack<<distance<<pos_e.x<<pos_e.y<<pos_e.z<<rot;
     if(sock1.send(pack,ip,sender_port_distance)==sf::Socket::Done)
     {
         pack.clear();
     }
 }
 
-void Network::Receive()
+void Network::Receive(int &option)
 {
 
     sock.setBlocking(true);
-    char data[100];
-
-    std::size_t received;
-
-    if (sock.receive(data, 100, received, ip, port) != sf::Socket::Done)
-    {
-        std::cerr<<"Error - data reception"<<std::endl;
-    }
-    std::cout<<data<<std::endl;
+    if(sock.receive(pack,ip,port)!=sf::Socket::NotReady)
+        if(pack>>option)
+        {
+            pack.clear();
+        }
     sock.setBlocking(false);
+
+    conection=true;
 
 }
 
@@ -120,32 +110,15 @@ sf::Vector3f Network::Receive_pos(sf::Vector3f &fr_eye,float &rot)
     return fr_eye;
 }
 
-int Network::Receive_distance(sf::Vector3f &pos_e)
+void Network::Receive_distance(sf::Vector3f &pos_e, float &rot, int &receive_distance)
 {
     int temp_distance=0;
     if(sock1.receive(pack,ip,port_distance)!=sf::Socket::NotReady)
-        if(pack>>temp_distance>>pos_e.x>>pos_e.y>>pos_e.z)
+        if(pack>>temp_distance>>pos_e.x>>pos_e.y>>pos_e.z>>rot)
         {
             pack.clear();
         }
-
-    return temp_distance;
+    if(temp_distance!=0)
+        receive_distance=temp_distance;
 }
 
-void Network::Send_status(std::string &game_status)
-{
-    pack<<game_status;
-    if(sock1.send(pack,ip,sender_port_distance)==sf::Socket::Done)
-    {
-        pack.clear();
-    }
-}
-void Network::Receive_status(std::string &game_status)
-{
-    if(sock2.receive(pack,ip,port_status)!=sf::Socket::NotReady)
-        if(pack>>game_status)
-        {
-            pack.clear();
-        }
-
-}

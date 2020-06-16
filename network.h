@@ -10,25 +10,22 @@ class Network
 public:
     Network();
     void set_ip();
-    void Send();
+    void Send(const int &option);
     void Send_pos(sf::Vector3f &eye,float &rot);
-    void Receive();
+    void Receive(int &option);
     sf::Vector3f Receive_pos(sf::Vector3f &fr_eye,float &rot);
-    int Receive_distance(sf::Vector3f &pos_e);
-    void Send_distance(const int &distance,sf::Vector3f &pos_e);
+    void Receive_distance(sf::Vector3f &pos_e,float &rot, int &receive_distance);
+    void Send_distance(const int &distance,sf::Vector3f &pos_e,float &rot);
     void seting_host();
-    void Send_status(std::string &game_status);
-    void Receive_status(std::string &game_status);
+    bool conection=false;
 private:
     sf::Packet pack;
-    sf::UdpSocket sock,sock1,sock2;
+    sf::UdpSocket sock,sock1;
     sf::IpAddress ip="192.168.0.102";
     unsigned short port=56000;
     unsigned short sender_port=54000;
     unsigned short port_distance=52000;
     unsigned short sender_port_distance=50000;
-    unsigned short port_status=48000;
-    unsigned short sender_port_status=46000;
 };
 
 #endif // NETWORK_H

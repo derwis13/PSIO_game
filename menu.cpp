@@ -1,11 +1,12 @@
 #include "menu.h"
-
+#include "iostream"
 
 
 Menu::Menu(const int &width,const int &height)
 {
-    if(!font.loadFromFile("arial.ttf"))
+    if(!font.loadFromFile("font/arial.ttf"))
     {
+        std::cerr<<"error to load font";
     }
     main_menu[0].setFont(font);
     main_menu[0].setColor(sf::Color::Red);
@@ -38,6 +39,18 @@ Menu::Menu(const int &width,const int &height)
     play_menu[1].setString("Coop mode");
     play_menu[1].setCharacterSize(160);
     play_menu[1].setPosition(sf::Vector2f(width/2-430,height/2));
+
+    option_menu[0].setFont(font);
+    option_menu[0].setColor(sf::Color::Red);
+    option_menu[0].setString("Full-Screen");
+    option_menu[0].setCharacterSize(160);
+    option_menu[0].setPosition(sf::Vector2f(width/2-450,height/2-250));
+
+    option_menu[1].setFont(font);
+    option_menu[1].setColor(sf::Color::Yellow);
+    option_menu[1].setString("Windowed-Screen");
+    option_menu[1].setCharacterSize(160);
+    option_menu[1].setPosition(sf::Vector2f(width/2-680,height/2));
 
 
     game_over_menu[0].setFont(font);
@@ -83,6 +96,14 @@ void Menu::play_menu_draw(sf::RenderWindow &window)
     }
 }
 
+void Menu::option_menu_draw(sf::RenderWindow &window)
+{
+    for(int i=0; i<number_of_it_option; i++)
+    {
+        window.draw(option_menu[i]);
+    }
+}
+
 void Menu::game_over_menu_draw(sf::RenderWindow &window)
 {
     for(int i=0; i<number_of_it_game_over; i++)
@@ -116,6 +137,13 @@ void Menu::MoveUp()
             select_it--;
             play_menu[select_it].setColor(sf::Color::Red);
         }
+    if(actually_menu_==2)
+        if(select_it -1>=0)
+        {
+            option_menu[select_it].setColor(sf::Color::Yellow);
+            select_it--;
+            option_menu[select_it].setColor(sf::Color::Red);
+        }
     if(actually_menu_==3)
         if(select_it -1>=0)
         {
@@ -130,6 +158,7 @@ void Menu::MoveUp()
             select_it--;
             coop_menu[select_it].setColor(sf::Color::Red);
         }
+
 }
 
 void Menu::MoveDown()
@@ -148,6 +177,13 @@ void Menu::MoveDown()
             select_it++;
             play_menu[select_it].setColor(sf::Color::Red);
          }
+   if(actually_menu_==2)
+        if(select_it +1<number_of_it_option)
+         {
+            option_menu[select_it].setColor(sf::Color::Yellow);
+            select_it++;
+            option_menu[select_it].setColor(sf::Color::Red);
+         }
    if(actually_menu_==3)
        if(select_it +1<number_of_it_game_over)
        {
@@ -164,34 +200,61 @@ void Menu::MoveDown()
        }
 }
 
+void Menu::refresh()
+{
+    main_menu[0].setColor(sf::Color::Red);
+    main_menu[1].setColor(sf::Color::Yellow);
+    main_menu[2].setColor(sf::Color::Yellow);
+    play_menu[0].setColor(sf::Color::Red);
+    play_menu[1].setColor(sf::Color::Yellow);
+    option_menu[0].setColor(sf::Color::Red);
+    option_menu[1].setColor(sf::Color::Yellow);
+    game_over_menu[0].setColor(sf::Color::Red);
+    game_over_menu[1].setColor(sf::Color::Yellow);
+    coop_menu[0].setColor(sf::Color::Red);
+    coop_menu[1].setColor(sf::Color::Yellow);
+}
+
 void Menu::setBackground(sf::RenderWindow &window)
 {
+    sf::Vector2f texture_size;
+    sf::Vector2f windowSize(window.getSize().x,window.getSize().y);
+
     sf::Texture texture;
     if(actually_menu_==3)
     {
         if(!win)
         {
-        texture.loadFromFile("game_over.jpg");
+        texture.loadFromFile("picture/game_over.jpg");
         sf::Sprite menu_s;
         menu_s.setTexture(texture);
-        menu_s.setScale(0.65,0.7);
+        texture_size.x=menu_s.getTextureRect().width;
+        texture_size.y=menu_s.getTextureRect().height;
+
+        menu_s.setScale(windowSize.x/texture_size.x,windowSize.y/texture_size.y);
         window.draw(menu_s);
         }
         else
         {
-            texture.loadFromFile("win_game.png");
+            texture.loadFromFile("picture/win_game.png");
             sf::Sprite menu_s;
             menu_s.setTexture(texture);
-            menu_s.setScale(2,1.5);
+            texture_size.x=menu_s.getTextureRect().width;
+            texture_size.y=menu_s.getTextureRect().height;
+
+            menu_s.setScale(windowSize.x/texture_size.x,windowSize.y/texture_size.y);
             window.draw(menu_s);
         }
     }
     else
     {
-        texture.loadFromFile("menu.jpg");
+        texture.loadFromFile("picture/menu.jpg");
         sf::Sprite menu_s;
         menu_s.setTexture(texture);
-        menu_s.setScale(2,2.7);
+        texture_size.x=menu_s.getTextureRect().width;
+        texture_size.y=menu_s.getTextureRect().height;
+
+        menu_s.setScale(windowSize.x/texture_size.x,windowSize.y/texture_size.y);
         window.draw(menu_s);
     }
 }
@@ -200,6 +263,7 @@ void Menu::actually_choose(const int &actually_menu)
 {
     actually_menu_=actually_menu;
     select_it=0;
+    refresh();
 }
 
 void Menu::GameOver(const bool &win_)

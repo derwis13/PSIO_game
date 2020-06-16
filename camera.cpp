@@ -243,8 +243,6 @@ void move_camera(const sf::Clock &clk,sf::Vector3f &eye,sf::Vector3f &center,
     temp_center.y=eye.y+1;
     }
 
-
-
 //            float gravity=9.81;
 //            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 //            {
@@ -259,8 +257,6 @@ void move_camera(const sf::Clock &clk,sf::Vector3f &eye,sf::Vector3f &center,
 //                centerz-=gravity*clk.getElapsedTime().asSeconds();
 
 //            }
-
-
 
 }
 

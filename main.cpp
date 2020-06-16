@@ -16,7 +16,7 @@ void set_light();
 
 void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
                        Sound *sound1,Sound *sound2,Sound *sound0,bool &running,Menu &menu,
-                       std::string &game_status);
+                       int &game_status,sf::Vector3f &fr_eye);
 float Hero::rot;
 float Enemy::rot;
 
@@ -26,9 +26,9 @@ int main() {
 
     Network net;
 
-    sf::Vector2i window_size(1024,768);
+    sf::Vector2i window_size(sf::VideoMode::getDesktopMode().width,sf::VideoMode::getDesktopMode().height);
     Sound *sound1,*sound2,*sound0;
-    std::string r1="run_1.ogg",r2="run_2.wav",r0="run_0.wav";
+    std::string r1="sound/run_1.ogg",r2="sound/run_2.wav",r0="sound/run_0.wav";
 
     sound1 = new Sound(r1);
     sound2 = new Sound(r2);
@@ -36,12 +36,11 @@ int main() {
 
     bool coop_mode=false;
     bool host=false;
-
-
+    bool fullscreen=false;
 
     //\\\\\\\\\\\\\\\\\\\\#############MENU#######################\\\\\\\\//
 
-    sf::RenderWindow window1(sf::VideoMode(window_size.x, window_size.y), "Try to get out");
+    sf::RenderWindow window1(sf::VideoMode(window_size.x, window_size.y), "Try to get out",sf::Style::Default);
     Menu menu(window1.getSize().x, window1.getSize().y);
 
 
@@ -74,6 +73,7 @@ int main() {
                         break;
                     case 1:
                         std::cout<<"Option is pressed"<<std::endl;
+                        menu.actually_choose(2);
                         break;
                     case 2:
                         std::cout<<"Exit is pressed"<<std::endl;
@@ -94,7 +94,31 @@ int main() {
                     case 1:
                         std::cout<<"Coop mode is pressed"<<std::endl;
                         menu.actually_choose(4);
-                        coop_mode=true;
+                        break;
+                    }
+                    break;
+                }
+                if(event.key.code==sf::Keyboard::Enter and menu.actually_menu_==2)
+                {
+                    switch (menu.getItem())
+                    {
+                    case 0:
+                        std::cout<<"Fullscreen is pressed"<<std::endl;
+                        if(!fullscreen)
+                        {
+                        fullscreen=true;
+                        window1.create(sf::VideoMode(window_size.x, window_size.y), "Try to get out",sf::Style::Fullscreen);
+                        menu.actually_choose(0);
+                        }
+                        break;
+                    case 1:
+                        std::cout<<"Windowed screen is pressed"<<std::endl;
+                        if(fullscreen)
+                        {
+                        fullscreen=false;
+                        window1.create(sf::VideoMode(window_size.x, window_size.y), "Try to get out",sf::Style::Default);
+                        menu.actually_choose(0);
+                        }
                         break;
                     }
                     break;
@@ -105,11 +129,13 @@ int main() {
                     {
                     case 0:
                         std::cout<<"Host a game is pressed"<<std::endl;
+                        coop_mode=true;
                         host=true;
                         window1.close();
                         break;
                     case 1:
                         std::cout<<"Join a game is pressed"<<std::endl;
+                        coop_mode=true;
                         window1.close();
                         break;
                     }
@@ -126,6 +152,10 @@ int main() {
         {
             menu.play_menu_draw(window1);
         }
+        if(menu.actually_menu_==2)
+        {
+            menu.option_menu_draw(window1);
+        }
         if(menu.actually_menu_==4)
         {
             menu.coop_menu_draw(window1);
@@ -138,21 +168,21 @@ int main() {
 
     do
     {
-        std::string game_status="";
+        int game_status=0;
+        int option;
 
         if(coop_mode)
-            net.set_ip();
-
-        srand (time(NULL));
-        int option=rand()%5+1;
+            if(!net.conection)
+                net.set_ip();
 
         sf::Vector3f eye(2,5,3);
-      //  sf::Vector3f eye(5,20,3);
         sf::Vector3f pos_e(2,5,1);
         sf::Vector3f center(eye.x,eye.y+1,eye.z);
         sf::Vector3f fr_eye=eye;
 
         sf::Vector2i map_size(150,190);
+
+        bool colission_Enemy_Hero=false;
 
         char **board = new char *[map_size.x];
         for (unsigned int w = 0; w<map_size.x; w++)
@@ -171,33 +201,45 @@ int main() {
             if(host)
             {
                 net.seting_host();
-                net.Receive();
-                net.Send();
+                net.Receive(option);
+                net.Send(option);
 
             }
             else
             {
-                net.Send();
-                net.Receive();
+                srand (time(NULL));
+                net.Send(rand()%5+1);
+                net.Receive(option);
             }
         }
+        else
+        {
+            srand (time(NULL));
+            option=rand()%5+1;
+        }
+
+        std::cout<<option<<std::endl;
+
 
 
         sf::Clock clock;
         sf::Clock time_of_game;
+        clock.restart();
+        time_of_game.restart();
 
+        sf::Window window(sf::VideoMode(window_size.x,window_size.y),"try to get out", sf::Style::Default,sf::ContextSettings(32));
 
-        sf::RenderWindow window(sf::VideoMode(window_size.x, window_size.y), "Try to get out", sf::Style::Default, sf::ContextSettings(32));
+        if(fullscreen)
+            window.create(sf::VideoMode(window_size.x,window_size.y),"try to get out", sf::Style::Fullscreen,sf::ContextSettings(32));
 
         window.setVerticalSyncEnabled(true);
         window.setActive(true);
 
-        Load_Texture("wall.png",Texturs,Texturs.size());
-        Load_Texture("grass.png",Texturs,Texturs.size());
-       // Load_Texture("my_head1.jpg",Texturs,Texturs.size());
-        Load_Texture("iron.png",Texturs,Texturs.size());
-        Load_Texture("devil.jpg",Texturs,Texturs.size());
-        Load_Texture("finish.jpg",Texturs,Texturs.size());
+        Load_Texture("picture/wall.png",Texturs,Texturs.size());
+        Load_Texture("picture/grass.png",Texturs,Texturs.size());
+        Load_Texture("picture/iron.png",Texturs,Texturs.size());
+        Load_Texture("picture/devil.jpg",Texturs,Texturs.size());
+        Load_Texture("picture/finish.jpg",Texturs,Texturs.size());
 
         glClearColor(0.3,0,0,0);
         glEnable(GL_DEPTH_TEST);
@@ -219,15 +261,14 @@ int main() {
                     running = false;
                     exit(0);
                 }
-
-                if(event.mouseWheelScroll.delta==-1)
-                {
-                    eye.z-=1;
-                }
-                if(event.mouseWheelScroll.delta==1)
-                {
-                    eye.z+=1;
-                }
+//                if(event.mouseWheelScroll.delta==-1)
+//                {
+//                    eye.z-=1;
+//                }
+//                if(event.mouseWheelScroll.delta==1)
+//                {
+//                    eye.z+=1;
+//                }
                 static sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                 int temp_mouse_pos_x=mouse_pos.x;
                 mouse_pos = sf::Mouse::getPosition(window);
@@ -242,29 +283,13 @@ int main() {
             glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE) ;
             glEnable (GL_COLOR_MATERIAL);
 
-
-            bool colission_Enemy_Hero=false;
-            if(game_status=="lose")
-                colission_Enemy_Hero=true;
-            if(coop_mode)
-            {
-                if(host)
-                {
-                net.Receive_status(game_status);
-                net.Send_status(game_status);
-                }
-                else
-                {
-                net.Send_status(game_status);
-                net.Receive_status(game_status);
-                }
-            }
-
             static float rot=0;
             static int distance=0;
+            static int receive_distance=map_size.x*map_size.y;
 
             map=new world(Texturs);
             character1 =new Hero(eye.x,eye.y,1,Texturs[2],Hero::rot);
+
             if(coop_mode)
             {
                 if(host)
@@ -279,11 +304,6 @@ int main() {
                 }
                 character3 =new Hero(fr_eye.x,fr_eye.y,1,Texturs[2],rot);
             }
-
-            set_finish_square(option,map,eye,sound1,sound2,sound0,running,menu,
-                              game_status);
-            if(!running)
-                break;
 
             std::vector<char> list_of_move;
 
@@ -308,27 +328,19 @@ int main() {
                 character2 =new Enemy(pos_e,Texturs[3],Enemy::rot);
                 sf::Vector2i temp_pos_e(pos_e.x,pos_e.y);
                 sf::Vector2i temp_eye(eye.x,eye.y);
-                find_path(temp_eye,temp_pos_e,list_of_move,map,colission_Enemy_Hero,distance,board,map_size);
+                sf::Vector2i temp_fr_eye(fr_eye.x,fr_eye.y);
+                find_path(temp_eye,temp_pos_e,list_of_move,map,colission_Enemy_Hero,distance,board,map_size,
+                          receive_distance,coop_mode);
                 int speed_e=3;
 
-
-                if(colission_Enemy_Hero)
-                {
-                    sound2->Stop_Sound();
-                    sound1->Stop_Sound();
-                    running=false;
-                    menu.GameOver(false);
-                    game_status="lose";
-
-                }
                 sf::Vector3f temp_position_e=pos_e;
                 if(coop_mode)
                 {
-                    net.Send_distance(distance,pos_e);
+                    net.Send_distance(distance,pos_e,Enemy::rot);
+                    net.Receive_distance(temp_position_e,Enemy::rot,receive_distance);
                 }
-                int rec_distance=net.Receive_distance(temp_position_e);
 
-                if(distance<rec_distance or !coop_mode)
+                if(distance<receive_distance or !coop_mode)
                 {
                     if(list_of_move.size()!=0)
                     {
@@ -358,8 +370,27 @@ int main() {
                 {
                     pos_e=temp_position_e;
                 }
+                if(temp_fr_eye==temp_pos_e and coop_mode)
+                    colission_Enemy_Hero=true;
             }
 
+            if(colission_Enemy_Hero)
+            {
+                net.Send_distance(distance,pos_e,Enemy::rot);
+                sound2->Stop_Sound();
+                sound1->Stop_Sound();
+                running=false;
+                menu.GameOver(false);
+            }
+            set_finish_square(option,map,eye,sound1,sound2,sound0,running,menu,
+                              game_status,fr_eye);
+
+            if(running==false and coop_mode)
+            {
+                net.Send_pos(eye,Hero::rot);
+            }
+            set_finish_square(option,map,eye,sound1,sound2,sound0,running,menu,
+                              game_status,fr_eye);
 
             move_camera(clock,eye,center,character1,map,temp_center,alpha_radius);
             set_viewport(window_size,eye,center);
@@ -367,9 +398,6 @@ int main() {
 
             clock.restart();
             window.display();
-
-
-
         }
 
         delete(map);
@@ -384,9 +412,13 @@ int main() {
 
         delete [] board;
 
+
         //\\\\\\\\\\\\\\\\\\\\#############MENU#######################\\\\\\\\//
 
-        window1.create(sf::VideoMode(window_size.x, window_size.y), "Try to get out");
+        window1.create(sf::VideoMode(window_size.x, window_size.y), "Try to get out",sf::Style::Default);
+
+        if(fullscreen)
+            window1.create(sf::VideoMode(window_size.x, window_size.y), "Try to get out",sf::Style::Fullscreen);
 
         while (window1.isOpen())
         {
@@ -404,8 +436,6 @@ int main() {
                     if(event.key.code==sf::Keyboard::Down or
                             event.key.code==sf::Keyboard::S)
                         menu.MoveDown();
-                    if(event.key.code==sf::Keyboard::Escape)
-                        menu.actually_choose(0);
                     if(event.key.code==sf::Keyboard::Enter and menu.actually_menu_==3)
                         switch (menu.getItem())
                         {
@@ -468,9 +498,9 @@ void set_light()
 
 }
 
-void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
-                       Sound *sound1,Sound *sound2,Sound *sound0,bool &running,Menu &menu,
-                       std::string &game_status)
+void set_finish_square(const int &option, world *map, const sf::Vector3f &eye,
+                       Sound *sound1, Sound *sound2, Sound *sound0, bool &running, Menu &menu,
+                       int &game_status, sf::Vector3f &fr_eye)
 {
     switch (option)
     {
@@ -478,14 +508,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(130,180,20,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y) or game_status=="win")
+        if(fin.contains(eye.x,eye.y) or game_status==1)
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
-            game_status="win";
+            game_status=1;
         }
         break;
     }
@@ -493,14 +523,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(36,138,18,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y) or game_status=="win")
+        if(fin.contains(eye.x,eye.y) or fin.contains(fr_eye.x,fr_eye.y))
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
-            game_status="win";
+            game_status=1;
         }
         break;
     }
@@ -508,14 +538,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(45,110,9,8);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y) or game_status=="win")
+        if(fin.contains(eye.x,eye.y) or fin.contains(fr_eye.x,fr_eye.y))
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
-            game_status="win";
+            game_status=1;
         }
         break;
     }
@@ -523,14 +553,14 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(115,138,8,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y) or game_status=="win")
+        if(fin.contains(eye.x,eye.y) or fin.contains(fr_eye.x,fr_eye.y))
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
-            game_status="win";
+            game_status=1;
         }
         break;
     }
@@ -538,19 +568,17 @@ void set_finish_square(const int &option,world *map,const sf::Vector3f &eye,
     {
         sf::FloatRect fin(125,50,12,10);
         map->create_ground_finish(fin);
-        if(fin.contains(eye.x,eye.y) or game_status=="win")
+        if(fin.contains(eye.x,eye.y) or fin.contains(fr_eye.x,fr_eye.y))
         {
             sound2->Stop_Sound();
             sound1->Stop_Sound();
             sound0->Stop_Sound();
             running=false;
             menu.GameOver(true);
-            game_status="win";
+            game_status=1;
         }
         break;
     }
     }
 
 }
-
-

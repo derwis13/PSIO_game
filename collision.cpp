@@ -37,9 +37,10 @@ bool colission_path(const world* w,const int &pos_e_x,const int &pos_e_y)
     return false;
 }
 
-void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
+void find_path(const sf::Vector2i &temp_eye, sf::Vector2i &temp_pos_e,
                std::vector<char> &list_of_move, const world* w,
-               bool &collision_Enemy_Hero,int &distance, char **board,const sf::Vector2i &map_size)
+               bool &collision_Enemy_Hero, int &distance, char **board, const sf::Vector2i &map_size,
+               int &receive_distance, bool &coop_mode)
 {
     bool find_p=false;
 
@@ -97,6 +98,12 @@ void find_path(const sf::Vector2i &temp_eye,sf::Vector2i &temp_pos_e,
          }
             q.pop();
             distance=i;
+
+            if(receive_distance+1<distance and receive_distance!=0 and coop_mode)
+            {
+               // std::cout<<"jest mniejsze"<<std::endl;
+                break;
+            }
 
         if(board[temp_pos_e.x][temp_pos_e.y]!='0')
         {

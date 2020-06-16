@@ -5,6 +5,7 @@
 #define number_of_it_play_menu 2
 #define number_of_it_game_over 2
 #define number_of_it_coop_menu 2
+#define number_of_it_option 2
 class Menu
 {
 public:
@@ -30,6 +31,8 @@ private:
     sf::Text play_menu[number_of_it_play_menu];
     sf::Text game_over_menu[number_of_it_game_over];
     sf::Text coop_menu[number_of_it_coop_menu];
+    sf::Text option_menu[number_of_it_option];
+    void refresh();
 
 
 
