@@ -24,15 +24,17 @@ float Enemy::rot;
 
 int main() {
 
+
     Network net;
 
     sf::Vector2i window_size(sf::VideoMode::getDesktopMode().width,sf::VideoMode::getDesktopMode().height);
-    Sound *sound1,*sound2,*sound0;
-    std::string r1="sound/run_1.ogg",r2="sound/run_2.wav",r0="sound/run_0.wav";
+    Sound *sound1,*sound2,*sound0,*sound3;
+    std::string r1="sound/run_1.ogg",r2="sound/run_2.wav",r0="sound/run_0.wav",r3="sound/fear_sound.wav";
 
     sound1 = new Sound(r1);
     sound2 = new Sound(r2);
     sound0 = new Sound(r0);
+    sound3= new Sound(r3);
 
     bool coop_mode=false;
     bool host=false;
@@ -43,6 +45,8 @@ int main() {
     sf::RenderWindow window1(sf::VideoMode(window_size.x, window_size.y), "Try to get out",sf::Style::Default);
     Menu menu(window1.getSize().x, window1.getSize().y);
 
+    sound3->Play_Sound();
+    sound3->music.setLoop(true);
 
 
     while (window1.isOpen())
@@ -168,6 +172,7 @@ int main() {
 
     do
     {
+        sound3->Stop_Sound();
         int game_status=0;
         int option;
 
@@ -261,14 +266,14 @@ int main() {
                     running = false;
                     exit(0);
                 }
-//                if(event.mouseWheelScroll.delta==-1)
-//                {
-//                    eye.z-=1;
-//                }
-//                if(event.mouseWheelScroll.delta==1)
-//                {
-//                    eye.z+=1;
-//                }
+                if(event.mouseWheelScroll.delta==-1)
+                {
+                    eye.z-=1;
+                }
+                if(event.mouseWheelScroll.delta==1)
+                {
+                    eye.z+=1;
+                }
                 static sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                 int temp_mouse_pos_x=mouse_pos.x;
                 mouse_pos = sf::Mouse::getPosition(window);
@@ -307,19 +312,19 @@ int main() {
 
             std::vector<char> list_of_move;
 
-            if(time_of_game.getElapsedTime().asSeconds()<=20 and sound0->music.getStatus()==0)
+            if(time_of_game.getElapsedTime().asSeconds()<=10 and sound0->music.getStatus()==0)
             {
                 sound0->Play_Sound();
                 sound0->music.setLoop(true);
             }
-            if(time_of_game.getElapsedTime().asSeconds()>=20)
+            if(time_of_game.getElapsedTime().asSeconds()>=10)
             {
                 if(sound1->music.getStatus()==0)
                 {
                     sound0->Stop_Sound();
                     sound1->Play_Sound();
                 }
-                if(sound2->music.getStatus()==0 and time_of_game.getElapsedTime().asSeconds()>=26)
+                if(sound2->music.getStatus()==0 and time_of_game.getElapsedTime().asSeconds()>=16)
                 {
                     sound2->Play_Sound();
                     sound2->music.setLoop(true);
