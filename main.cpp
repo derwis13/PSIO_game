@@ -266,14 +266,6 @@ int main() {
                     running = false;
                     exit(0);
                 }
-                if(event.mouseWheelScroll.delta==-1)
-                {
-                    eye.z-=1;
-                }
-                if(event.mouseWheelScroll.delta==1)
-                {
-                    eye.z+=1;
-                }
                 static sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                 int temp_mouse_pos_x=mouse_pos.x;
                 mouse_pos = sf::Mouse::getPosition(window);
